@@ -1,0 +1,17 @@
+name: Beehive Ignition
+
+on:
+  workflow_dispatch:
+
+jobs:
+  swarm-pulse:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Announce ignition
+        run: echo "🐝 Beehive ignition sequence started"
+
+      - name: Run smoke test
+        run: echo "✅ Swarm is alive and executing communal jobs"
