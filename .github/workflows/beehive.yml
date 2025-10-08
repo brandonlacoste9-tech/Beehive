@@ -24,3 +24,11 @@ jobs:
           git add codex.md
           git commit -m "Codex: ignition entry [skip ci]" || echo "No changes to commit"
           git push
+
+      - name: Emit telemetry
+        run: |
+          mkdir -p telemetry
+          echo "{\"event\":\"ignition\",\"status\":\"success\",\"timestamp\":\"$(date -u +%FT%TZ)\",\"runner\":\"$RUNNER_NAME\",\"workflow_run_id\":\"$GITHUB_RUN_ID\"}" >> telemetry/ignitions.jsonl
+          git add telemetry/ignitions.jsonl
+          git commit -m "Telemetry: ignition pulse [skip ci]" || echo "No changes to commit"
+          git push
