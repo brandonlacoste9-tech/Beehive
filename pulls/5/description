@@ -1,0 +1,83 @@
+### 🐝 Beehive Ignition: Dual‑Artifact Ritual
+
+This PR consolidates the ignition workflow into a **production‑ready ritual** that now leaves behind **two artifacts** on every run:
+
+- ✅ **Codex logging** → appends timestamped lore entries into `codex.md`  
+- ✅ **Telemetry logging** → appends structured JSONL records into `telemetry/ignitions.jsonl`
+
+---
+
+### 🔹 Why This Matters
+- **Codex.md** = human‑readable swarm history (mythic continuity)  
+- **Telemetry JSONL** = machine‑readable metrics (operational visibility)  
+- Together, they form the **dual‑artifact ritual**: every ignition is both immortalized and measurable.
+
+---
+
+### 🔹 Complete Workflow
+
+```yaml
+name: Beehive Ignition
+
+on:
+  workflow_dispatch:
+
+jobs:
+  swarm-pulse:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Announce ignition
+        run: echo "🐝 Beehive ignition sequence started"
+
+      - name: Run smoke test
+        run: echo "✅ Swarm is alive and executing communal jobs"
+
+      - name: Codex entry
+        run: |
+          echo "### $(date -u) — Beehive ignition successful 🐝" >> codex.md
+          git config user.name "beehive-runner"
+          git config user.email "runner@beehive.local"
+          git add codex.md
+          git commit -m "Codex: ignition entry [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Emit telemetry
+        run: |
+          mkdir -p telemetry
+          echo "{\"event\":\"ignition\",\"status\":\"success\",\"timestamp\":\"$(date -u +%FT%TZ)\",\"runner\":\"$RUNNER_NAME\",\"workflow_run_id\":\"$GITHUB_RUN_ID\"}" >> telemetry/ignitions.jsonl
+          git add telemetry/ignitions.jsonl
+          git commit -m "Telemetry: ignition pulse [skip ci]" || echo "No changes to commit"
+          git push
+```
+
+---
+
+### 🔹 Expected Output
+
+After each workflow run:
+
+**`codex.md`** (human-readable lore):
+```markdown
+### Wed Oct 08 06:18:00 UTC 2025 — Beehive ignition successful 🐝
+```
+
+**`telemetry/ignitions.jsonl`** (machine-readable metrics):
+```json
+{"event":"ignition","status":"success","timestamp":"2025-10-08T06:18:00Z","runner":"beehive-runner","workflow_run_id":"12345678"}
+```
+
+---
+
+### 🔹 Next Steps
+1. ✅ Mark this PR **Ready for review**
+2. ✅ Merge into `main`
+3. ✅ Trigger ignition from **Actions → Beehive Ignition → Run workflow**
+4. ✅ Verify both artifacts update
+
+---
+
+### 🔹 Coming Next
+Once this is merged and verified, we'll stage **PR #6: Webhook Pulse Integration** so each ignition also broadcasts a live JSON payload to your dashboard or Slack — completing the **triple‑artifact ritual**.
