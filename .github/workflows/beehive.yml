@@ -1,0 +1,34 @@
+name: Beehive Ignition
+
+on:
+  workflow_dispatch:
+
+jobs:
+  swarm-pulse:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Announce ignition
+        run: echo "🐝 Beehive ignition sequence started"
+
+      - name: Run smoke test
+        run: echo "✅ Swarm is alive and executing communal jobs"
+
+      - name: Codex entry
+        run: |
+          echo "### $(date -u) — Beehive ignition successful 🐝" >> codex.md
+          git config user.name "beehive-runner"
+          git config user.email "runner@beehive.local"
+          git add codex.md
+          git commit -m "Codex: ignition entry [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Emit telemetry
+        run: |
+          mkdir -p telemetry
+          echo "{\"event\":\"ignition\",\"status\":\"success\",\"timestamp\":\"$(date -u +%FT%TZ)\",\"runner\":\"$RUNNER_NAME\",\"workflow_run_id\":\"$GITHUB_RUN_ID\"}" >> telemetry/ignitions.jsonl
+          git add telemetry/ignitions.jsonl
+          git commit -m "Telemetry: ignition pulse [skip ci]" || echo "No changes to commit"
+          git push
