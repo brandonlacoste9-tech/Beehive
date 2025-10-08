@@ -24,3 +24,20 @@ jobs:
           git add codex.md
           git commit -m "Codex: ignition entry [skip ci]" || echo "No changes to commit"
           git push
+
+      - name: Emit telemetry
+        run: |
+          mkdir -p telemetry
+          echo "{\"event\":\"ignition\",\"status\":\"success\",\"timestamp\":\"$(date -u +%FT%TZ)\",\"runner\":\"$RUNNER_NAME\",\"workflow_run_id\":\"$GITHUB_RUN_ID\"}" >> telemetry/ignitions.jsonl
+          git add telemetry/ignitions.jsonl
+          git commit -m "Telemetry: ignition pulse [skip ci]" || echo "No changes to commit"
+          git push
+
+      - name: Send webhook pulse
+        if: env.BEEHIVE_WEBHOOK_URL != ''
+        env:
+          BEEHIVE_WEBHOOK_URL: ${{ secrets.BEEHIVE_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"event\":\"ignition\",\"status\":\"success\",\"timestamp\":\"$(date -u +%FT%TZ)\",\"runner\":\"$RUNNER_NAME\",\"workflow_run_id\":\"$GITHUB_RUN_ID\",\"repository\":\"$GITHUB_REPOSITORY\"}" \
+          $BEEHIVE_WEBHOOK_URL || echo "⚠️  Webhook pulse failed (non-blocking)"
