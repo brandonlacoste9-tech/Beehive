@@ -23,6 +23,9 @@ if (!fs.existsSync(violationsPath)) {
 
 const allViolations = JSON.parse(fs.readFileSync(violationsPath, 'utf8'));
 
+// Schema path for reference
+const schemaPath = path.join(__dirname, '../codex-pulse-schema.json');
+
 // Collect unique pages from violations
 const testedPages = new Set();
 allViolations.forEach(violation => {
