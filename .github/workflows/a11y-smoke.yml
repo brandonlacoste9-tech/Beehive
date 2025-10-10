@@ -1,0 +1,138 @@
+name: Accessibility Smoke Test
+
+on:
+  workflow_run:
+    workflows: ["Netlify Preview Deployment"]
+    types:
+      - completed
+
+jobs:
+  a11y-test:
+    runs-on: ubuntu-latest
+    # Only run if the preview deployment was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Download preview URL artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: netlify-preview-url
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set PLAYWRIGHT_BASE_URL from preview.txt
+        id: set-base-url
+        run: |
+          PREVIEW_URL=$(cat preview.txt)
+          echo "PLAYWRIGHT_BASE_URL=$PREVIEW_URL" >> $GITHUB_ENV
+          echo "::notice::Running accessibility tests against: $PREVIEW_URL"
+
+      - name: Run Playwright accessibility tests
+        run: npm run test:a11y
+        env:
+          CI: true
+
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-report
+          path: a11y-report/
+          retention-days: 30
+
+      - name: Generate accessibility summary
+        if: always()
+        run: |
+          echo "## 🔍 Accessibility Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Preview URL**: $PLAYWRIGHT_BASE_URL" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow Run**: [${{ github.event.workflow_run.id }}](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "a11y-report/index.html" ]; then
+            echo "✅ **Accessibility report generated successfully**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📊 View the detailed [accessibility report](../../../actions/runs/${{ github.run_id }}) in the workflow artifacts." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **No accessibility report found**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Comment on PR with results
+        if: always() && github.event.workflow_run.event == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const runId = context.runId;
+            const workflowRunId = context.payload.workflow_run.id;
+            
+            // Get the PR number from the workflow run
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${context.payload.workflow_run.head_branch}`,
+              state: 'open'
+            });
+            
+            if (pullRequests.length === 0) {
+              console.log('No open PR found for this branch');
+              return;
+            }
+            
+            const prNumber = pullRequests[0].number;
+            const previewUrl = process.env.PLAYWRIGHT_BASE_URL || 'N/A';
+            
+            const comment = `## 🔍 Accessibility Test Results
+            
+            **Preview URL**: ${previewUrl}
+            **Status**: ${context.job.status === 'success' ? '✅ Passed' : '❌ Failed'}
+            
+            ### Summary
+            Automated accessibility testing has been completed using Playwright + axe-core.
+            
+            📊 **[View detailed accessibility report](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId})**
+            
+            ### Coverage
+            - ✅ WCAG 2.1 Level A & AA compliance
+            - ✅ Document structure validation
+            - ✅ Navigation accessibility
+            - ✅ Color contrast checks
+            - ✅ Image accessibility
+            - ✅ Form accessibility
+            
+            ---
+            *🐝 Automated by Beehive Accessibility Workflow | [Workflow Run #${runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId})*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
+
+      - name: Log to Codex Pulse
+        if: always()
+        run: |
+          echo "### $(date -u) — Accessibility scan completed 🔍" >> codex-pulse.md
+          echo "- **PR**: #${{ github.event.workflow_run.pull_requests[0].number || 'N/A' }}" >> codex-pulse.md
+          echo "- **Preview URL**: $PLAYWRIGHT_BASE_URL" >> codex-pulse.md
+          echo "- **Status**: ${{ job.status }}" >> codex-pulse.md
+          echo "- **Workflow Run**: ${{ github.run_id }}" >> codex-pulse.md
+          echo "" >> codex-pulse.md

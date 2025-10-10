@@ -1,0 +1,58 @@
+name: Netlify Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2.1
+        id: netlify-deploy
+        with:
+          publish-dir: './.next'
+          production-deploy: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions - PR #${{ github.event.pull_request.number }}"
+          enable-pull-request-comment: true
+          enable-commit-comment: false
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 10
+
+      - name: Extract preview URL
+        id: extract-url
+        run: |
+          echo "${{ steps.netlify-deploy.outputs.deploy-url }}" > preview.txt
+          echo "Preview URL saved to preview.txt"
+          cat preview.txt
+
+      - name: Upload preview URL as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: netlify-preview-url
+          path: preview.txt
+          retention-days: 1
+
+      - name: Output preview URL
+        run: |
+          echo "::notice::Netlify Preview URL: ${{ steps.netlify-deploy.outputs.deploy-url }}"
