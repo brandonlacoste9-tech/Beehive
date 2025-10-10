@@ -8,6 +8,7 @@ Welcome to BeeHive’s AdGenXAI—an AI-powered ad creative generator built for 
 - Responsive design with custom BeeHive branding
 - SEO-optimized for discoverability
 - Easy deployment and scaling
+- **🆕 Automated accessibility testing with Codex Pulse** - Every PR is tested for WCAG compliance
 
 ## 🚀 Getting Started
 
@@ -46,6 +47,8 @@ We welcome pull requests! Here's how to help:
 3. Commit your changes (`git commit -am 'Add new feature'`)
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a pull request
+
+**Accessibility:** All pull requests are automatically tested for accessibility compliance using Codex Pulse. Please address any critical or serious violations before merging. See [docs/CODEX_PULSE.md](docs/CODEX_PULSE.md) for details.
 
 ## 🐝 Bee Philosophy
 
