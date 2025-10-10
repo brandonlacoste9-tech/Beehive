@@ -37,6 +37,27 @@ This project is Netlify-ready:
 - Set publish directory: `.next`
 - Set functions directory: `netlify/functions` (if using Netlify-style API)
 
+## 🔍 Accessibility Testing
+
+This project includes automated accessibility testing on every pull request:
+
+- **Automated Workflows**: GitHub Actions automatically deploy PRs to Netlify and run Playwright + axe-core accessibility tests
+- **WCAG Compliance**: Tests ensure WCAG 2.1 Level A & AA compliance
+- **Detailed Reports**: HTML reports are generated for each test run
+- **PR Comments**: Results are automatically posted to pull requests
+
+For more information, see [docs/ACCESSIBILITY_TESTING.md](docs/ACCESSIBILITY_TESTING.md).
+
+### Running Tests Locally
+
+```bash
+# Run accessibility tests
+npm run test:a11y
+
+# View the report
+npx playwright show-report a11y-report
+```
+
 ## 🧠 Contributing
 
 We welcome pull requests! Here's how to help:
