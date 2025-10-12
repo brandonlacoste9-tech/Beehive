@@ -1,5 +1,6 @@
 ﻿// app/layout.tsx
 import { ThemeProvider } from 'next-themes';
+import { AuthContext } from '../components/AuthContext';
 import '../styles/globals.css';
 
 export const metadata = {
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
-        </ThemeProvider>
+        <AuthContext>
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            {children}
+          </ThemeProvider>
+        </AuthContext>
       </body>
     </html>
   );

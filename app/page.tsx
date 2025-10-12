@@ -1,11 +1,15 @@
 ﻿// app/page.tsx
-import HomeHero from "@/components/HomeHero";
+import HomeHero from "../components/HomeHero";
+import { Navigation } from "../components/Navigation";
 
 export default function HomePage() {
   return (
-    <main>
-      <HomeHero />
-      {/* The rest of your homepage sections will go here */}
-    </main>
+    <>
+      <Navigation />
+      <main>
+        <HomeHero />
+        {/* The rest of your homepage sections will go here */}
+      </main>
+    </>
   );
 }
