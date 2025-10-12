@@ -1,4 +1,7 @@
 [build]
-  command = "npm run build"
-  publish = ".next"
-  functions = "netlify/functions"
+command = "npm run build && npm run export"
+publish = "out"
+
+[build.environment]
+NODE_VERSION = "20"
+NPM_FLAGS = "--include=dev"
