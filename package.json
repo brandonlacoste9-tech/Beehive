@@ -5,7 +5,8 @@
     "lint": "node -e \"process.exit(0)\"",
     "typecheck": "node -e \"process.exit(0)\"",
     "test": "node -e \"process.exit(0)\"",
-    "verify": "bash .agents/verify.sh"
+    "verify": "bash .agents/verify.sh",
+    "smoke": "bash scripts/export-smoke.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
