@@ -1,0 +1,7 @@
+﻿prompts:
+  - name: export.verifySmoke
+    description: Run smoke test for /api/export and confirm job status
+    prompt: >
+      Run a POST to /api/export with demo payload. Capture the jobId from the response.
+      Then poll GET /api/export/status/<jobId> until status is "completed".
+      Confirm presence of non-empty downloadUrl and numeric sizeBytes. Output a short pass/fail summary.
