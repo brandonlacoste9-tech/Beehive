@@ -1,4 +1,6 @@
 ﻿// app/get-started/page.tsx
+import Link from "next/link";
+
 export default function GetStartedPage() {
   return (
     <main className="min-h-screen bg-gray-900 text-white p-8">
@@ -35,9 +37,9 @@ export default function GetStartedPage() {
         </div>
         
         <div className="text-center mt-12">
-          <a href="/" className="text-indigo-400 hover:text-indigo-300 underline">
-             Back to Home
-          </a>
+          <Link href="/" className="text-indigo-400 hover:text-indigo-300 underline">
+            Back to Home
+          </Link>
         </div>
       </div>
     </main>

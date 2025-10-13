@@ -1,56 +1,70 @@
-# 🐝 BeeHive: AdGenXAI
+# BeeHive / BeeSwarm Studio
 
-Welcome to BeeHive’s AdGenXAI—an AI-powered ad creative generator built for marketers, founders, and creators. Powered by GPT-4, styled with Tailwind CSS, and deployed with Netlify.
+Sovereign, living UI: Next.js 14 (App Router) + Tailwind (Fire-UI) + Remotion (preview only) + OpenAI Whisper (STT) + ElevenLabs (TTS/music proxy). Optional observability (Supabase/Upstash/OTel) is stubbed.
 
-## ✨ Features
-- Input product description or URL
-- Generates headline, body copy, and image prompt
-- Responsive design with custom BeeHive branding
-- SEO-optimized for discoverability
-- Easy deployment and scaling
+## Prereqs
+- Node 18+
+- npm or pnpm
+- `.env.local` with keys (see below)
 
-## 🚀 Getting Started
-
+## Setup
 ```bash
-# Clone the repo
-git clone https://github.com/brandonlacoste9-tech/Beehive.git
-cd Beehive
-
-# Install dependencies
-npm install
-
-# Add your OpenAI key
-echo "OPENAI_API_KEY=your-key-here" > .env.local
-
-# Start the dev server
+npm i
+cp .env.example .env.local # or create manually
 npm run dev
 ```
 
-## 🐝 Deployment Instructions
+Open [http://localhost:3000](http://localhost:3000) — you should see **SwarmGate**.
 
-This project is Netlify-ready:
+## Env (.env.local)
 
-- Push to GitHub
-- Connect your repo to Netlify
-- Add `OPENAI_API_KEY` to Netlify environment variables
-- Set build command: `npm run build`
-- Set publish directory: `.next`
-- Set functions directory: `netlify/functions` (if using Netlify-style API)
+```
+OPENAI_API_KEY=sk-...
+NEXT_PUBLIC_ELEVENLABS_API_KEY=...
+NEXT_PUBLIC_ELEVENLABS_VOICE_URL=/api/voice/synthesize
+NEXT_PUBLIC_ELEVENLABS_MUSIC_URL=/api/music/generate
+```
 
-## 🧠 Contributing
+> Keys must **not** be hardcoded in client code. Server routes proxy external services.
 
-We welcome pull requests! Here's how to help:
+## Commands
 
-1. Fork the repo
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a pull request
+* `npm run dev` — local server
+* `npm run build` — Next build (Remotion previews must be CSR via dynamic import)
+* `npm run start` — production start
+* `npm run lint` — optional
+* `npm run typecheck` — optional
 
-## 🐝 Bee Philosophy
+## Structure
 
-BeeHive is built on the idea that creativity should be fast, collaborative, and sweet. Like bees, we work together to pollinate ideas and build something beautiful.
+```
+app/                      # App Router
+  api/
+    voice/synthesize/
+    music/generate/
+    assets/list/
+    rituals/live/
+    export/               # (stub – see below)
+src/
+  components/             # Fire-UI components
+  lib/                    # motion, sound, api helpers
+tailwind.config.ts        # Fire-UI tokens, keyframes
+TASKS.md                  # agent-friendly backlog
+.github/copilot-instructions.md
+```
 
-## 📄 License
+## Development Flow (Agents & Humans)
 
-MIT — free to use, remix, and share.
+1. Pick a task in `TASKS.md`.
+2. Implement **only** files listed in the task’s scope.
+3. Verify with `npm run dev` (no console errors).
+4. Update `TASKS.md` (mark done + notes).
+5. Commit using conventional style, open PR.
+
+## Known Stubs
+
+* ffmpeg export worker (server/queue) — **stubbed** via `/api/export`.
+* Observability (Supabase/Upstash/OTel) — **no-ops** behind `src/lib/telemetry.ts`.
+* Music generation — demo URLs until real endpoint is available.
+
+```

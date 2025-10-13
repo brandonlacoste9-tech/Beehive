@@ -1,0 +1,9 @@
+objectives:
+  - Implement tasks from TASKS.md in order unless specified otherwise.
+  - Keep diffs small and runnable; avoid broad refactors.
+sources:
+  - path: TASKS.md
+  - path: .github/copilot-instructions.md
+defaults:
+  branch_prefix: "feat/codex/"
+  commit_style: "conventional"

@@ -1,4 +1,6 @@
 ﻿// app/showcase/page.tsx
+import Link from "next/link";
+
 export default function ShowcasePage() {
   return (
     <main className="min-h-screen bg-gray-900 text-white p-8">
@@ -56,9 +58,9 @@ export default function ShowcasePage() {
           <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg transition duration-300 mr-4">
             Get Started Now
           </button>
-          <a href="/" className="text-indigo-400 hover:text-indigo-300 underline">
-             Back to Home
-          </a>
+          <Link href="/" className="text-indigo-400 hover:text-indigo-300 underline">
+            Back to Home
+          </Link>
         </div>
       </div>
     </main>
