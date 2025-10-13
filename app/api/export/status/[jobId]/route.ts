@@ -14,6 +14,8 @@ export async function GET(_req: NextRequest, { params }: { params: { jobId: stri
     outputPath: job.outputPath ?? null,
     downloadUrl: job.downloadUrl ?? null,
     error: job.error ?? null,
+    sizeBytes: (job.input as Record<string, any> | undefined)?.sizeBytes ?? null,
     updatedAt: job.updatedAt,
   });
 }
+

@@ -8,6 +8,7 @@
     "verify": "bash .agents/verify.sh"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.75.0"
+    "@supabase/supabase-js": "^2.75.0",
+    "@upstash/qstash": "^2.8.4"
   }
 }
