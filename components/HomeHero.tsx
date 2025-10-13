@@ -66,7 +66,7 @@ export default function HomeHero() {
               <stop offset="100%" stopColor="transparent" stopOpacity="0" />
             </radialGradient>
           </defs>
-          <rect width="100%" height="100%" fill={url(#)} />
+          <rect width="100%" height="100%" fill={`url(#${gradientId})`} />
           <rect
             width="100%"
             height="100%"

@@ -1,4 +1,5 @@
-﻿// app/showcase/page.tsx
+import Link from "next/link";
+
 export default function ShowcasePage() {
   return (
     <main className="min-h-screen bg-gray-900 text-white p-8">
@@ -9,7 +10,7 @@ export default function ShowcasePage() {
             Witness the power of the swarm. See what creators are building with BeeHive.
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-gray-800 rounded-lg overflow-hidden">
             <div className="h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
@@ -22,7 +23,7 @@ export default function ShowcasePage() {
               </p>
             </div>
           </div>
-          
+
           <div className="bg-gray-800 rounded-lg overflow-hidden">
             <div className="h-48 bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
               <span className="text-2xl"></span>
@@ -34,7 +35,7 @@ export default function ShowcasePage() {
               </p>
             </div>
           </div>
-          
+
           <div className="bg-gray-800 rounded-lg overflow-hidden">
             <div className="h-48 bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
               <span className="text-2xl"></span>
@@ -47,7 +48,7 @@ export default function ShowcasePage() {
             </div>
           </div>
         </div>
-        
+
         <div className="text-center bg-gray-800 p-8 rounded-lg">
           <h2 className="text-3xl font-bold mb-4">Ready to Create?</h2>
           <p className="text-gray-300 mb-6">
@@ -56,9 +57,9 @@ export default function ShowcasePage() {
           <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg transition duration-300 mr-4">
             Get Started Now
           </button>
-          <a href="/" className="text-indigo-400 hover:text-indigo-300 underline">
-             Back to Home
-          </a>
+          <Link href="/" className="text-indigo-400 hover:text-indigo-300 underline">
+            Back to Home
+          </Link>
         </div>
       </div>
     </main>
