@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "bee-dual-agent",
   "private": true,
   "scripts": {
@@ -6,5 +6,8 @@
     "typecheck": "node -e \"process.exit(0)\"",
     "test": "node -e \"process.exit(0)\"",
     "verify": "bash .agents/verify.sh"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.0"
   }
 }

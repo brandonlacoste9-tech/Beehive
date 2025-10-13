@@ -79,3 +79,12 @@ export async function runExportJob(job: ExportJob): Promise<JobStatus> {
 export function getJobStatus(jobId: string): JobStatus | undefined {
   return JOBS.get(jobId);
 }
+// Default export required by webhook/queue
+export default async function runExport(jobId: string, payload: any): Promise<string> {
+  const osMod = await import("node:os");
+  const pathMod = await import("node:path");
+  const fsMod = await import("node:fs/promises");
+  const output = pathMod.join(osMod.tmpdir(), `beeswarm-export-${jobId}.mp4`);
+  await fsMod.writeFile(output, Buffer.from("stub-video"));
+  return output;
+}
