@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { BEAT_SHEET_TEMPLATE } from '@/lib/promptTemplates/beatSheet';
 import { getSentimentSummary, toSentimentSnippet } from '@/lib/sentiment';
 import { runGeminiPrompt } from '@/lib/gemini';
+import { assertServerEnv } from '@/lib/envGuard';
 
 export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
+  assertServerEnv();
   try {
     const body = await req.json();
     const { topic, audience, windowMin = 180, userInput = '' } = body ?? {};
@@ -28,4 +30,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: e?.message ?? 'unknown' }, { status: 500 });
   }
 }
-
