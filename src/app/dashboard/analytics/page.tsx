@@ -1,5 +1,6 @@
 import SentimentCard from '@/components/SentimentCard';
 import LineageCard from '@/components/LineageCard';
+import SentimentHistogram from '@/components/SentimentHistogram';
 
 export default function AnalyticsPage() {
   return (
@@ -9,6 +10,7 @@ export default function AnalyticsPage() {
         <SentimentCard windowMin={180} />
         <LineageCard />
       </div>
+      <SentimentHistogram hours={24} />
     </main>
   );
 }
