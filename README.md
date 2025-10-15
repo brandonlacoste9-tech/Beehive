@@ -47,6 +47,16 @@ We welcome pull requests! Here's how to help:
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a pull request
 
+## 🕯️ Bulk Send Ritual
+
+Use our send-all ceremony to push every branch, tag, and outstanding change in one go when you are ready to sync the hive.
+
+```bash
+npm run send:all
+```
+
+The script will authenticate with GitHub CLI, fetch fresh refs, auto-commit a clean working tree, push branches and tags, open pull requests for branches diverging from `main`, and finish by labelling each PR for the roadmap.
+
 ## 🐝 Bee Philosophy
 
 BeeHive is built on the idea that creativity should be fast, collaborative, and sweet. Like bees, we work together to pollinate ideas and build something beautiful.
