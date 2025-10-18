@@ -5,16 +5,16 @@ export const handler: Handler = async () => {
   if (!SLACK_WEBHOOK_URL) return { statusCode: 500, body: 'Missing SLACK_WEBHOOK_URL' };
 
   const lines = [
-    '🐝 *BeeHive deploy complete!*',
-    `• *Time:* ${new Date().toISOString()}`,
-    `• *Context:* ${CONTEXT}`,
-    `• *Branch:* ${BRANCH}`,
-    `• *Commit:* ${COMMIT_REF}`,
-    `• *Site:* ${URL}`,
-    `• *Deploy:* ${DEPLOY_URL}`,
-    `• *Prime:* ${DEPLOY_PRIME_URL}`,
-    '• *Mode:* Static Export',
-    '• *Pages:* index, /.netlify/functions/generateAd'
+    ':tada: *BeeHive deploy complete!*',
+    `:small_blue_diamond: *Time:* ${new Date().toISOString()}`,
+    `:small_blue_diamond: *Context:* ${CONTEXT}`,
+    `:small_blue_diamond: *Branch:* ${BRANCH}`,
+    `:small_blue_diamond: *Commit:* ${COMMIT_REF ? `\`${COMMIT_REF.slice(0, 7)}\`` : 'N/A'}`,
+    `:small_blue_diamond: *Site:* ${URL}`,
+    `:small_blue_diamond: *Deploy:* ${DEPLOY_URL}`,
+    `:small_blue_diamond: *Prime:* ${DEPLOY_PRIME_URL}`,
+    ':small_blue_diamond: *Mode:* Static Export',
+    ':small_blue_diamond: *Pages:* index, /.netlify/functions/generateAd'
   ].join('\n');
 
   const payload = {
