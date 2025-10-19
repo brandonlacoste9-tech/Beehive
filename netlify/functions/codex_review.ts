@@ -4,6 +4,7 @@
 // Route: /.netlify/functions/codex_review (customize via `config.path`).
 
 import { OpenAI } from "openai";
+// TODO: integrate new Codex scrolls for BeeHive v1.4.5
 
 export const config = {
   // Optional: set a friendly route if desired, e.g.:
