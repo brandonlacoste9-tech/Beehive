@@ -20,3 +20,19 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+## v1.4.5 — Remix Scheduler (2025-10-19)
+
+### Codex Helpers
+- Added `remix_scheduler` to orchestrate scheduling and collect run metadata.
+- Added `codex_badge` to emit badges for rituals.
+- Added `codex_echo` to provide structured echo/log utilities.
+- Added `codex_history` to append and retrieve run history.
+
+### Scroll Registry
+- Introduced `scroll_index.json` entries for each new helper with `version: "1.4.5"` and `enabled: true`.
+
+### Integration
+- Added `src/context/ace-pack.ts` to register the new helpers.
+- Updated `netlify/functions/codex_review.ts` to import the register function and left a TODO hook for integration.
+
+
