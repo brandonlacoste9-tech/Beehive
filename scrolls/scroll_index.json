@@ -1,6 +1,22 @@
 [
-  "remix_scheduler",
-  "codex_badge",
-  "codex_echo",
-  "codex_history"
+  {
+    "name": "remix_scheduler",
+    "version": "1.4.5",
+    "enabled": true
+  },
+  {
+    "name": "codex_badge",
+    "version": "1.4.5",
+    "enabled": true
+  },
+  {
+    "name": "codex_echo",
+    "version": "1.4.5",
+    "enabled": true
+  },
+  {
+    "name": "codex_history",
+    "version": "1.4.5",
+    "enabled": true
+  }
 ]
