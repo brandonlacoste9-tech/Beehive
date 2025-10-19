@@ -1,10 +1,8 @@
-// Netlify Function: wraps Codex PR review behind Netlify AI Gateway.
-// Auth is injected by Netlify's AI Gateway; no OPENAI_API_KEY needed.
-//
-// Route: /.netlify/functions/codex_review (customize via `config.path`).
-
+// TODO: call registerCodexScrolls() to integrate Codex scrolls for BeeHive v1.4.5
 import { OpenAI } from "openai";
-// TODO: integrate new Codex scrolls for BeeHive v1.4.5
+
+import { registerCodexScrolls } from '../../src/context/ace-pack';
+
 
 export const config = {
   // Optional: set a friendly route if desired, e.g.:
