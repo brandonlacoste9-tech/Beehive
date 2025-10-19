@@ -1,0 +1,32 @@
+---
+
+**Resilience Update: Checkout Step**
+
+This workflow update replaces the fragile `refs/pull/${{ github.event.pull_request.number }}/merge` reference with a direct checkout of the PR head ref via:
+```yaml
+ref: ${{ github.event.pull_request.head.ref }}
+```
+This change ensures the workflow remains functional even when the merge commit is unavailable—such as when the PR is closed, deleted, or the merge ref fails to materialize.  
+It aligns with GitHub Actions best practices and prevents silent failures in CI triggered by ephemeral refs.
+
+---
+
+Thanks for asking me to work on this. I will get started on it and keep this PR's description up to date as I form a plan and make progress.
+
+
+&lt;!-- START COPILOT CODING AGENT SUFFIX --&gt;
+
+
+&lt;details&gt;
+
+&lt;summary&gt;Original prompt&lt;/summary&gt;
+
+&gt; Update the `.github/workflows/codex-review.yml` file to replace the checkout step with the recommended fix: use `ref: ${{ github.event.pull_request.head.ref }}` instead of `refs/pull/${{ github.event.pull_request.number }}/merge` to handle cases where the pull request's merge ref is unavailable.
+
+
+&lt;/details&gt;
+
+*This pull request was created as a result of the following prompt from Copilot chat.*
+&gt; Update the `.github/workflows/codex-review.yml` file to replace the checkout step with the recommended fix: use `ref: ${{ github.event.pull_request.head.ref }}` instead of `refs/pull/${{ github.event.pull_request.number }}/merge` to handle cases where the pull request's merge ref is unavailable.
+
+&lt;!-- START COPILOT CODING AGENT TIPS --&gt;
