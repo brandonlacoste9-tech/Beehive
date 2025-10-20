@@ -20,6 +20,9 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+
+### Documentation
+- Sealed The Enoch Codex with responsible-use and build/deploy scrolls, linking them within the Tool Invocation rituals index.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
