@@ -20,6 +20,9 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+
+### Scrolls
+- Added `scrolls/smoke-tests.md` ritualizing integration smoke checks (OpenAI, ElevenLabs, Mux, Stripe/Coinbase) with curl incantations and metadata capture guidance.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
