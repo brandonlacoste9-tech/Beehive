@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "wsl_codex_troubleshoot",
+    "version": "1.4.6",
+    "enabled": true
   }
 ]

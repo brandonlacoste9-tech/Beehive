@@ -16,6 +16,9 @@
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
 
+### Scrolls & Runbooks
+- Inscribed **Scroll of Discovery — Finding Codex in WSL** to guide Codex binary troubleshooting inside the forge.
+
 ### DevOps
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
