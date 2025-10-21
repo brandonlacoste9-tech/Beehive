@@ -6,6 +6,7 @@
 - Real-Time Sentiment Grounding in Beat-Sheet + Agent Chat.
 - Insight Hotspots (data-weighted confidence; hedge on weak signal).
 - Streaming UX (SSE via Gemini 1.5).
+- ACE context packs for Codex reviewers (task + reflection bullets).
 
 ### Growth & Metrics
 - Explicit K-Factor via `referrals` + tracked Share links (`?ref=<sessionId>` + UTM).
@@ -20,3 +21,5 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify Codex gateway wired with metrics, echo blobs, and badge gates.
+- GitHub action funnels diff payloads to Netlify + posts replay metadata artifacts.

@@ -2,7 +2,17 @@ name: Codex PR Review
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch to review"
+        required: false
+        default: "main"
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   codex_review:
@@ -10,57 +20,80 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    outputs:
-      final_message: ${{ steps.run_codex.outputs.final-message }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR merge ref (best effort)
+        id: co_merge
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v4
         with:
-          # Explicitly check out the PR's merge commit.
+          fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+        continue-on-error: true
 
-      - name: Pre-fetch base and head refs for the PR
-        run: |
-          git fetch --no-tags origin \
-            ${{ github.event.pull_request.base.ref }} \
-            +refs/pull/${{ github.event.pull_request.number }}/head
-
-      - name: Run Codex
-        id: run_codex
-        uses: openai/codex-action@v1
+      - name: Checkout PR head SHA (fallback)
+        if: ${{ github.event_name == 'pull_request' && steps.co_merge.outcome != 'success' }}
+        uses: actions/checkout@v4
         with:
-          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          prompt: |
-            This is PR #${{ github.event.pull_request.number }} for ${{ github.repository }}.
-            Base SHA: ${{ github.event.pull_request.base.sha }}
-            Head SHA: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
-            Review ONLY the changes introduced by the PR.
-            Suggest any improvements, potential bugs, or issues.
-            Be concise and specific in your feedback.
+      - name: Checkout dispatch ref
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref }}
 
-            Pull request title and body:
-            ----
-            ${{ github.event.pull_request.title }}
-            ${{ github.event.pull_request.body }}
-  
-  post_feedback:
-    runs-on: ubuntu-latest
-    needs: [codex_review]
-    if: needs.codex_review.outputs.final_message != ''
-    permissions:
-      issues: write
-      pull-requests: write
-    steps:
-      - name: Report Codex feedback
-        uses: actions/github-script@v7
+      - name: Build diff (capped) → POST to Netlify
         env:
-          CODEX_FINAL_MESSAGE: ${{ needs.codex_review.outputs.final_message }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || 0 }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git fetch --no-tags origin ${BASE_SHA} || true
+          git fetch --no-tags origin ${HEAD_SHA} || true
+          base=${BASE_SHA}
+          head=${HEAD_SHA}
+          git diff --unified=1 --no-color --diff-algorithm=patience "$base" "$head" | head -c 800000 > diff.txt
+          python3 <<'PY'
+import json, os
+with open('diff.txt', 'r', encoding='utf-8', errors='ignore') as fh:
+    diff = fh.read()
+payload = {
+    "repo": os.environ.get("GITHUB_REPOSITORY", ""),
+    "pr": int(os.environ.get("PR_NUMBER", "0") or 0),
+    "base": os.environ.get("BASE_SHA", "origin/main"),
+    "head": os.environ.get("HEAD_SHA", "HEAD"),
+    "diff": diff,
+}
+with open('request.json', 'w', encoding='utf-8') as target:
+    json.dump(payload, target)
+PY
+          curl -sS -X POST "$SITE_URL/.netlify/functions/codex_review" \
+            -H "content-type: application/json" \
+            --data @request.json \
+            --output codex_review_findings.txt --fail || (echo "Function error."; cat codex_review_findings.txt; exit 1)
+
+      - name: Upload findings (name-agnostic)
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex_review_findings
+          path: codex_review_findings.txt
+          if-no-files-found: warn
+
+      - name: Comment on PR (preview)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('codex_review_findings.txt','utf8').slice(0, 5000);
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: process.env.CODEX_FINAL_MESSAGE,
+              body: `🧠 Codex review via Netlify Gateway (GPT-5 Pro):\n\n\`\`\`\n${body}\n\`\`\``
             });
