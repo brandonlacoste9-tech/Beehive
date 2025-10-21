@@ -47,6 +47,11 @@ We welcome pull requests! Here's how to help:
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a pull request
 
+## 📜 Codex Index
+
+- [Scroll 0016: Codex Invocation Rite](wiki/Scroll-0016-Codex-Invocation-Rite.md) — Codex CLI integrated as ritual assistant, invocation modes and swarm best practices codified.
+- [Scroll 0017: Codex Orchestration Rite](wiki/Scroll-0017-Codex-Orchestration-Rite.md) — Multi-surface workflow across CLI, IDE, cloud, and GitHub inscribed.
+
 ## 🐝 Bee Philosophy
 
 BeeHive is built on the idea that creativity should be fast, collaborative, and sweet. Like bees, we work together to pollinate ideas and build something beautiful.
