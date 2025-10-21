@@ -15,8 +15,10 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- New "LM Studio Bridge" scroll documenting SDK, MCP manifest, and CLI rituals.
 
 ### DevOps
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify ritual endpoints now capture `jobId` + `sizeBytes` metadata for CodexReplay overlays and Slack beacons.

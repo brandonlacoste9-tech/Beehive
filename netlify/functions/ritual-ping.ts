@@ -1,4 +1,4 @@
-﻿import type { Handler } from '@netlify/functions';
+import type { Handler } from '@netlify/functions';
 import { getStore } from '@netlify/blobs';
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL!;
@@ -11,6 +11,30 @@ const HISTORY_KEY = 'history';
 function isLocalContext() {
   const ctx = (process.env.CONTEXT || '').toLowerCase();
   return ctx === 'local' || ctx === 'dev' || ctx === 'development' || process.env.NETLIFY_DEV === 'true';
+}
+
+function normalizeSizeBytes(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, Math.round(value));
+  }
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed) {
+      const parsed = Number(trimmed);
+      if (Number.isFinite(parsed)) {
+        return Math.max(0, Math.round(parsed));
+      }
+    }
+  }
+  return undefined;
+}
+
+function formatNumber(value: number): string {
+  try {
+    return new Intl.NumberFormat('en-US').format(value);
+  } catch {
+    return String(value);
+  }
 }
 
 async function postSlack(payload: unknown) {
@@ -42,21 +66,43 @@ export const handler: Handler = async (event) => {
     }
   }
 
-  let body: any = {};
+  let body: Record<string, unknown> = {};
   try {
-    if (event.body) body = JSON.parse(event.body);
+    if (event.body) {
+      const parsed = JSON.parse(event.body) as unknown;
+      if (parsed && typeof parsed === 'object') {
+        body = parsed as Record<string, unknown>;
+      }
+    }
   } catch {
     // ignore invalid JSON
   }
 
-  const { actor, status } = body || {};
+  const actor = body?.actor;
+  const status = body?.status;
   const normalized: 'ok' | 'fail' = status === 'fail' ? 'fail' : 'ok';
+
+  const jobIdRaw = body?.jobId ?? body?.job_id;
+  const artifactUrlRaw = body?.artifactUrl ?? body?.artifact_url;
+  const sizeRaw = body?.sizeBytes ?? body?.size_bytes;
+  const notesRaw = body?.notes;
+
+  const actorStr = typeof actor === 'string' && actor.trim() ? actor.trim() : actor ? String(actor) : undefined;
+  const jobId = typeof jobIdRaw === 'string' && jobIdRaw.trim() ? jobIdRaw.trim() : undefined;
+  const artifactUrl =
+    typeof artifactUrlRaw === 'string' && artifactUrlRaw.trim() ? artifactUrlRaw.trim() : undefined;
+  const sizeBytes = normalizeSizeBytes(sizeRaw);
+  const notes = typeof notesRaw === 'string' && notesRaw.trim() ? notesRaw.trim() : undefined;
 
   const store = getStore(STORE);
   const updated = {
     status: normalized,
     updatedAt: new Date().toISOString(),
-    ...(actor ? { actor: String(actor) } : {}),
+    ...(actorStr ? { actor: actorStr } : {}),
+    ...(jobId ? { jobId } : {}),
+    ...(typeof sizeBytes === 'number' ? { sizeBytes } : {}),
+    ...(artifactUrl ? { artifactUrl } : {}),
+    ...(notes ? { notes } : {}),
   };
 
   // avoid duplicates within 10 seconds
@@ -70,23 +116,49 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  const eventObj = { timestamp: updated.updatedAt, status: normalized, actor: updated['actor'] ?? null };
+  const eventObj = {
+    timestamp: updated.updatedAt,
+    status: normalized,
+    actor: actorStr ?? null,
+    jobId: jobId ?? null,
+    sizeBytes: typeof sizeBytes === 'number' ? sizeBytes : null,
+    artifactUrl: artifactUrl ?? null,
+    notes: notes ?? null,
+  };
   const newHistory = [...history, eventObj].slice(-1000);
   await store.set(HISTORY_KEY, newHistory);
   await store.set(KEY, updated);
 
+  const contextElements = [
+    { type: 'mrkdwn', text: `time: \`${updated.updatedAt}\`` },
+    ...(actorStr ? [{ type: 'mrkdwn', text: `actor: \`${actorStr}\`` }] : []),
+    ...(jobId ? [{ type: 'mrkdwn', text: `job: \`${jobId}\`` }] : []),
+  ];
+
+  const detailLines = [
+    typeof sizeBytes === 'number' ? `• *sizeBytes:* \`${formatNumber(sizeBytes)}\`` : null,
+    artifactUrl ? `• *artifact:* <${artifactUrl}|open>` : null,
+    notes ? `• *notes:* ${notes}` : null,
+  ].filter(Boolean);
+
+  const blocks: Array<Record<string, unknown>> = [
+    { type: 'section', text: { type: 'mrkdwn', text: `*BeeHive ritual*: *${normalized.toUpperCase()}*` } },
+    { type: 'context', elements: contextElements },
+  ];
+
+  if (detailLines.length > 0) {
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: detailLines.join('\n'),
+      },
+    });
+  }
+
   await postSlack({
     text: `🐝 *Ritual beacon* ${normalized.toUpperCase()}`,
-    blocks: [
-      { type: 'section', text: { type: 'mrkdwn', text: `*BeeHive ritual*: *${normalized.toUpperCase()}*` } },
-      {
-        type: 'context',
-        elements: [
-          { type: 'mrkdwn', text: `time: \`${updated.updatedAt}\`` },
-          ...(updated['actor'] ? [{ type: 'mrkdwn', text: `actor: \`${updated['actor']}\`` }] : []),
-        ],
-      },
-    ],
+    blocks,
   });
 
   return { statusCode: 200, body: JSON.stringify({ ok: true, updated }) };
