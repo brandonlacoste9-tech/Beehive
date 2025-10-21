@@ -1,6 +1,24 @@
-// This file defines the Codex Badge for BeeHive v1.4.5
-// TODO: Implement the badge component or logic
+import type { CodexIndex, CodexGlyph, CodexStatus } from './codex_types';
 
-export function codexBadge() {
-  return 'Codex badge placeholder';
+export interface CodexBadge {
+  label: string;
+  status: CodexStatus;
+  glyph: CodexGlyph;
+  detail: string;
+  resourcePath: string;
+}
+
+export function codexBadge(index: CodexIndex, artifactId: string): CodexBadge {
+  const artifact = index.artifacts.find((entry) => entry.id === artifactId);
+  if (!artifact) {
+    throw new Error(`Artifact ${artifactId} is not registered in the Codex index.`);
+  }
+
+  return {
+    label: artifact.title,
+    status: artifact.status,
+    glyph: artifact.glyph,
+    detail: `${artifact.summary} — last touched ${artifact.lastUpdated}.`,
+    resourcePath: artifact.resource.path
+  };
 }

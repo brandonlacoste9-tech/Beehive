@@ -1,0 +1,26 @@
+name: Codex PR Guard
+
+on:
+  pull_request:
+    paths:
+      - 'docs/codex-index.json'
+      - 'docs/codex-status.md'
+      - 'scripts/codex/**'
+      - 'src/codex/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Run Codex Guard
+        run: npm run codex:guard

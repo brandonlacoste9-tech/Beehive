@@ -1,0 +1,257 @@
+{
+  "$schema": "https://adgenxai.dev/schemas/codex-index.v2.json",
+  "version": "2.0.0",
+  "generatedAt": "2025-10-20T23:26:06.837Z",
+  "artifacts": [
+    {
+      "id": "codex-index",
+      "title": "Codex Machine Index",
+      "status": "sealed",
+      "glyph": "✅",
+      "summary": "Versioned manifest documenting the AdGenXAI ritual lineage.",
+      "lineage": {
+        "introducedIn": "CHANGELOG.md#v2-0-0-adgenxai-ritual-thesis",
+        "scroll": "scrolls/rituals.md",
+        "owner": "Codex Jedi"
+      },
+      "resource": {
+        "path": "docs/codex-index.json",
+        "mediaType": "application/json",
+        "sizeBytes": 7754,
+        "checksum": "b05062630164f4200cf8d164c1caa09aae7196e334733c5d87deb6f9bb2dd931"
+      },
+      "pointers": {
+        "changelog": "CHANGELOG.md#v2-0-0-adgenxai-ritual-thesis",
+        "statusPage": "docs/codex-status.md",
+        "thread": "scrolls/rituals.md#codex-rituals"
+      },
+      "lastUpdated": "2025-10-20T23:26:06.837Z",
+      "tags": [
+        "codex",
+        "manifest",
+        "ritual"
+      ]
+    },
+    {
+      "id": "codex-status",
+      "title": "Codex Ritual Dashboard",
+      "status": "sealed",
+      "glyph": "✅",
+      "summary": "Human-readable lifecycle digest for Codex artifacts and operations.",
+      "lineage": {
+        "introducedIn": "CHANGELOG.md#v2-0-0-adgenxai-ritual-thesis",
+        "scroll": "docs/codex-status.md",
+        "owner": "Codex Jedi"
+      },
+      "resource": {
+        "path": "docs/codex-status.md",
+        "mediaType": "text/markdown",
+        "sizeBytes": 2400,
+        "checksum": "e8bde3a724d9cf88f7be4353b6da50ed78eed0114442b614a62cb0d6164c9f17"
+      },
+      "pointers": {
+        "changelog": "CHANGELOG.md#v2-0-0-adgenxai-ritual-thesis",
+        "statusPage": "docs/codex-status.md",
+        "thread": "scrolls/rituals.md#codex-rituals"
+      },
+      "lastUpdated": "2025-10-20T23:26:06.837Z",
+      "tags": [
+        "codex",
+        "dashboard",
+        "ritual"
+      ]
+    },
+    {
+      "id": "ritual-rollback",
+      "title": "Ritual Rollback Safeguard",
+      "status": "pending",
+      "glyph": "⏳",
+      "summary": "Nightly restore harness awaiting integration with deployment audit logs.",
+      "lineage": {
+        "introducedIn": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "scroll": "scrolls/rituals.md",
+        "owner": "Swarm DevOps"
+      },
+      "resource": {
+        "path": "netlify/functions/ritualRollback.ts",
+        "mediaType": "application/typescript",
+        "sizeBytes": 0,
+        "checksum": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "pointers": {
+        "changelog": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "statusPage": "docs/codex-status.md"
+      },
+      "lastUpdated": "2024-10-19T00:00:00.000Z",
+      "tags": [
+        "safety",
+        "rollback",
+        "ci"
+      ]
+    },
+    {
+      "id": "hive-heartbeat",
+      "title": "Hive Heartbeat Telemetry",
+      "status": "pending",
+      "glyph": "⏳",
+      "summary": "Scheduled pulse to stream CI lineage into the swarm observability panel.",
+      "lineage": {
+        "introducedIn": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "scroll": "scrolls/rituals.md",
+        "owner": "Swarm Observability Guild"
+      },
+      "resource": {
+        "path": "src/codex/remix_scheduler.ts",
+        "mediaType": "application/typescript",
+        "sizeBytes": 0,
+        "checksum": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "pointers": {
+        "changelog": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "statusPage": "docs/codex-status.md"
+      },
+      "lastUpdated": "2024-10-19T00:00:00.000Z",
+      "tags": [
+        "telemetry",
+        "scheduler",
+        "ci"
+      ]
+    },
+    {
+      "id": "contributor-beacon",
+      "title": "Contributor Beacon",
+      "status": "draft",
+      "glyph": "📝",
+      "summary": "Notification bridge linking Codex rituals to StudioShare thread updates.",
+      "lineage": {
+        "introducedIn": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "scroll": "scrolls/rituals.md",
+        "owner": "Community Steward"
+      },
+      "resource": {
+        "path": "src/codex/codex_badge.ts",
+        "mediaType": "application/typescript",
+        "sizeBytes": 0,
+        "checksum": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "pointers": {
+        "changelog": "CHANGELOG.md#v1-4-5-remix-scheduler",
+        "statusPage": "docs/codex-status.md"
+      },
+      "lastUpdated": "2024-10-19T00:00:00.000Z",
+      "tags": [
+        "community",
+        "notifications",
+        "codex"
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "jobId": "ritual-thesis-0001",
+      "ritual": "CI Ritual Nightly Sequence",
+      "artifactId": "codex-index",
+      "status": "sealed",
+      "glyph": "✅",
+      "sizeBytes": 7754,
+      "runtime": {
+        "startedAt": "2025-10-20T23:25:21.837Z",
+        "completedAt": "2025-10-20T23:26:06.837Z",
+        "durationSeconds": 45
+      },
+      "replay": {
+        "overlay": "codex-index",
+        "url": "https://codex.adgenxai.local/replay/ritual-thesis-0001",
+        "exportRef": "codex-index@2.0.0"
+      },
+      "logs": [
+        {
+          "step": "generate",
+          "status": "sealed",
+          "glyph": "✅",
+          "at": "2025-10-20T23:25:21.837Z",
+          "message": "codex-index payload synthesized."
+        },
+        {
+          "step": "render",
+          "status": "sealed",
+          "glyph": "✅",
+          "at": "2025-10-20T23:25:36.837Z",
+          "message": "codex-status dashboard templated."
+        },
+        {
+          "step": "validate",
+          "status": "sealed",
+          "glyph": "✅",
+          "at": "2025-10-20T23:25:51.837Z",
+          "message": "schema + checksum confirmed."
+        },
+        {
+          "step": "notify",
+          "status": "sealed",
+          "glyph": "✅",
+          "at": "2025-10-20T23:26:06.837Z",
+          "message": "CodexReplay overlay refreshed."
+        }
+      ]
+    },
+    {
+      "jobId": "hive-heartbeat-nightly",
+      "ritual": "CI Ritual Nightly Sequence",
+      "artifactId": "hive-heartbeat",
+      "status": "pending",
+      "glyph": "⏳",
+      "sizeBytes": 0,
+      "runtime": {
+        "startedAt": "2025-10-20T23:26:06.837Z",
+        "durationSeconds": 0
+      },
+      "replay": {
+        "overlay": "hive-heartbeat",
+        "url": "https://codex.adgenxai.local/replay/hive-heartbeat",
+        "exportRef": "hive-heartbeat@draft"
+      },
+      "logs": [
+        {
+          "step": "generate",
+          "status": "pending",
+          "glyph": "⏳",
+          "at": "2025-10-20T23:26:06.837Z",
+          "message": "Awaiting telemetry channel wiring."
+        }
+      ]
+    },
+    {
+      "jobId": "contributor-beacon-alpha",
+      "ritual": "PR Guard Smoke Test",
+      "artifactId": "contributor-beacon",
+      "status": "draft",
+      "glyph": "📝",
+      "sizeBytes": 0,
+      "runtime": {
+        "startedAt": "2025-10-20T23:26:06.837Z",
+        "durationSeconds": 0
+      },
+      "replay": {
+        "overlay": "contributor-beacon",
+        "url": "https://codex.adgenxai.local/replay/contributor-beacon",
+        "exportRef": "contributor-beacon@alpha"
+      },
+      "logs": [
+        {
+          "step": "generate",
+          "status": "draft",
+          "glyph": "📝",
+          "at": "2025-10-20T23:26:06.837Z",
+          "message": "Smoke harness reserved for contributor notifications."
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "checksumAlgorithm": "sha256",
+    "generator": "scripts/codex/generate-index.ts",
+    "ritualVersion": "2024.10.0",
+    "statusDocument": "docs/codex-status.md"
+  }
+}

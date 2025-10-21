@@ -1,0 +1,25 @@
+{
+  "name": "adgenxai-beehive",
+  "version": "2.0.0",
+  "description": "AdGenXAI Ritual Thesis automation scripts and validation",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "codex:generate": "tsx scripts/codex/generate-index.ts",
+    "codex:render": "tsx scripts/codex/render-status.ts",
+    "codex:validate": "tsx scripts/codex/validate-index.ts",
+    "codex:notify": "tsx scripts/codex/notify.ts",
+    "codex:ritual": "npm run codex:generate && npm run codex:render && npm run codex:validate && npm run codex:notify",
+    "codex:guard": "npm run test && npm run codex:validate",
+    "codex:smoke": "npm run codex:guard",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "zod": "^3.23.0"
+  }
+}

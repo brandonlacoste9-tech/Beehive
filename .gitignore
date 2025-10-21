@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+.next/
+coverage/
+.env*
+*.log
+.vscode/
+.cache/

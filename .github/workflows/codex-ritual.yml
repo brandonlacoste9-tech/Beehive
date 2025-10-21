@@ -1,0 +1,28 @@
+name: Codex Ritual Thesis
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/codex-index.json'
+      - 'docs/codex-status.md'
+      - 'scripts/codex/**'
+      - 'src/codex/**'
+      - 'tests/**'
+
+jobs:
+  ritual:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Run codex ritual
+        run: npm run codex:ritual

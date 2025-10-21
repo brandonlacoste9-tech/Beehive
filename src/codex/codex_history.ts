@@ -1,11 +1,18 @@
-// This file defines the Codex History for BeeHive v1.4.5
-// TODO: Implement history tracking for Codex interactions
+import type { CodexIndex, CodexLogEntry } from './codex_types';
 
-export interface HistoryEntry {
-  timestamp: Date;
-  message: string;
+export interface CodexHistoryEntry extends CodexLogEntry {
+  jobId: string;
 }
 
-export function addHistoryEntry(entries: HistoryEntry[], entry: HistoryEntry): HistoryEntry[] {
-  return [...entries, entry];
+export function buildHistory(index: CodexIndex): CodexHistoryEntry[] {
+  return index.operations
+    .flatMap((operation) => operation.logs.map((log) => ({ ...log, jobId: operation.jobId })))
+    .sort((a, b) => a.at.localeCompare(b.at));
+}
+
+export function appendHistory(
+  history: CodexHistoryEntry[],
+  entry: CodexHistoryEntry
+): CodexHistoryEntry[] {
+  return [...history, entry].sort((a, b) => a.at.localeCompare(b.at));
 }

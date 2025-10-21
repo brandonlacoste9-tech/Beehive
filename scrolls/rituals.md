@@ -16,10 +16,20 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 - **File:** `.github/post-merge-checklist.md`
 - **Purpose:** Guides verification of deployments, dashboard integrity, and documentation after every merge.
 
+## 🟢 Codex Ritual Thesis
+- **File:** `docs/codex-index.json`
+- **Purpose:** Canonical machine ledger for Codex artifacts, feeding the status dashboard and replay notifications.
+
+- **File:** `docs/codex-status.md`
+- **Purpose:** Glyph-driven dashboard for human review of artifact lifecycle and nightly operations.
+
+- **File:** `scripts/codex/*.ts`
+- **Purpose:** Implements generate → render → validate → notify ritual and PR guard harness.
+
 ---
 
-**How to use:**  
-- Review this index before every PR or milestone.  
+**How to use:**
+- Review this index before every PR or milestone.
 - Follow the linked rituals for consistent, audit-ready operations.  
 - Update this index when new ritual scrolls are added.
 

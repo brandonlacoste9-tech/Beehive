@@ -20,6 +20,19 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+## v2.0.0 — AdGenXAI Ritual Thesis (2025-10-20)
+
+### Codex Ritual Thesis
+- Introduced `docs/codex-index.json` as the canonical machine ledger for Codex artifacts, including canonical checksums and runtime metadata.
+- Added `docs/codex-status.md` to render lifecycle glyphs for artifacts and nightly operations.
+
+### Tooling & Validation
+- Created TypeScript scripts under `scripts/codex/*` to orchestrate the generate → render → validate → notify ritual.
+- Wired schema enforcement and canonical metric verification via `zod` + `vitest` powered utilities.
+
+### Developer Experience
+- Refined Codex helpers (`codex_badge`, `codex_echo`, `codex_history`, `remix_scheduler`) to consume the new index contracts.
+- Added npm scripts (`codex:ritual`, `codex:guard`, `codex:smoke`) and documentation updates to keep the swarm in sync.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
