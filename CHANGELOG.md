@@ -10,6 +10,7 @@
 ### Growth & Metrics
 - Explicit K-Factor via `referrals` + tracked Share links (`?ref=<sessionId>` + UTM).
 - Ritual Analytics: K with delta vs yesterday, 14-day sparkline, 24h Sentiment Histogram.
+- Sentiment summary card distills mention volume, mean mood, and latest excerpts for dashboards.
 - CSV export for lineage metrics.
 
 ### Artifacts & Usability
