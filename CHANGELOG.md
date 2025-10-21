@@ -20,3 +20,4 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Codex PR checkout ritual captured in `scrolls/codex-pr-checkout-resolution.md`.
