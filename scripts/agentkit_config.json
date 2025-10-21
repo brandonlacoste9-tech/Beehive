@@ -1,0 +1,8 @@
+{
+  "agent": "remix_runner",
+  "schedule": "0 * * * *",
+  "source": "https://<your-site>.netlify.app/api/signals",
+  "planner": "scripts/variant_planner.ts",
+  "executor": "scripts/gpt5_exec.ts",
+  "log": "out/mutations.log"
+}
