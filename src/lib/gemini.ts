@@ -1,16 +1,25 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error('Missing GEMINI_API_KEY');
+let genAI: GoogleGenerativeAI | null = null;
+
+function getGeminiClient() {
+  if (genAI) return genAI;
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) {
+    throw new Error('Missing GEMINI_API_KEY');
+  }
+  genAI = new GoogleGenerativeAI(key);
+  return genAI;
 }
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 export async function runGeminiPrompt(systemPrompt: string, userInput: string) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
-  const res = await model.generateContent([
-    { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userInput }] },
-  ]);
+  const client = getGeminiClient();
+  const model = client.getGenerativeModel({ model: 'gemini-1.5-pro' });
+  const prompt = `${systemPrompt}\n\n${userInput}`;
+  const res = await model.generateContent(prompt);
   return res.response.text();
 }
 
+export function resetGeminiForTests() {
+  genAI = null;
+}

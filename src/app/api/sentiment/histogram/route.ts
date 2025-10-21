@@ -1,18 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
 import { assertServerEnv } from '@/lib/envGuard';
 
 export const runtime = 'nodejs';
 
 type Bin = { hour: string; count: number; mean: number };
 
+function hasSupabaseEnv() {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
 export async function GET(req: NextRequest) {
+  if (!hasSupabaseEnv()) {
+    return NextResponse.json({ ok: false, error: 'supabase env missing' }, { status: 503 });
+  }
   assertServerEnv();
+  const supabase = getSupabaseAdmin();
   const url = new URL(req.url);
   const hours = Math.min(Math.max(Number(url.searchParams.get('hours') ?? 24), 6), 72);
   const since = new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('social_mentions')
     .select('ts, sentiment_score')
     .gte('ts', since)

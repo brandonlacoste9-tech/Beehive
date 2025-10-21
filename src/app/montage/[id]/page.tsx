@@ -1,8 +1,20 @@
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
 import { notFound } from 'next/navigation';
 
 export default async function MontagePage({ params }: { params: { id: string } }) {
-  const { data, error } = await supabaseAdmin
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return (
+      <main className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold">Montage</h1>
+        <p className="text-sm text-gray-600">
+          Supabase credentials are not configured. Provide `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to view montage lineage.
+        </p>
+      </main>
+    );
+  }
+
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
     .from('montages')
     .select('*')
     .eq('id', params.id)

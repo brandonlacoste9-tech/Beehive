@@ -4,9 +4,11 @@ export default function Home() {
       <h1>BeeHive online</h1>
       <p>Static export + Netlify Functions are wired.</p>
       <ul>
+        <li><a href="/demo">Persona demo pipeline</a></li>
         <li><a href="/.netlify/functions/ritual-badge">ritual-badge</a></li>
         <li><a href="/.netlify/functions/ritual-ping">ritual-ping</a></li>
         <li><a href="/.netlify/functions/ritual-metrics">ritual-metrics</a></li>
+        <li><a href="/.netlify/functions/billing-bridge">billing-bridge</a></li>
       </ul>
     </main>
   );

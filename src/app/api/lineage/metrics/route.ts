@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getSupabaseAdmin } from '@/lib/supabaseAdmin';
 import { assertServerEnv } from '@/lib/envGuard';
 
 export const runtime = 'nodejs';
@@ -17,10 +17,15 @@ function daysBack(n = 14) {
 
 type SeriesPoint = { day: string; montages: number; sessions: number };
 
+function hasSupabaseEnv() {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
 async function computeKFactor(series: SeriesPoint[]): Promise<number | null> {
+  const supabase = getSupabaseAdmin();
   try {
     const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-    const { data: refs, error } = await supabaseAdmin
+    const { data: refs, error } = await supabase
       .from('referrals')
       .select('source_id,target_id,created_at')
       .gte('created_at', since)
@@ -52,7 +57,11 @@ async function computeKFactor(series: SeriesPoint[]): Promise<number | null> {
 }
 
 export async function GET(_req: NextRequest) {
+  if (!hasSupabaseEnv()) {
+    return NextResponse.json({ ok: false, error: 'supabase env missing' }, { status: 503 });
+  }
   assertServerEnv();
+  const supabase = getSupabaseAdmin();
 
   const windowDays = 14;
   const days = daysBack(windowDays);
@@ -62,7 +71,7 @@ export async function GET(_req: NextRequest) {
   let messages: Array<{ created_at: string; session_id: string | null }> = [];
 
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await supabase
       .from('montages')
       .select('id,created_at')
       .gte('created_at', start)
@@ -73,7 +82,7 @@ export async function GET(_req: NextRequest) {
   }
 
   try {
-    const { data } = await supabaseAdmin
+    const { data } = await supabase
       .from('agent_messages')
       .select('id,created_at,session_id')
       .gte('created_at', start)

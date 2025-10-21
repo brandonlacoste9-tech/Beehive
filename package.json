@@ -1,0 +1,36 @@
+{
+  "name": "beehive",
+  "version": "1.4.5",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "smoke": "node scripts/smoke/beereel.mjs",
+    "swarm:zip": "node scripts/package/make-swarmkit.mjs",
+    "wiki": "node scripts/wiki/publish.mjs"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@netlify/blobs": "^10.1.0",
+    "@netlify/functions": "^5.0.0",
+    "@supabase/supabase-js": "^2.76.0",
+    "archiver": "^7.0.1",
+    "next": "14.2.10",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "stripe": "^19.1.0",
+    "recharts": "^2.12.7",
+    "openai": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.11",
+    "@types/react": "18.3.5",
+    "@types/react-dom": "18.3.0",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.10",
+    "typescript": "5.9.3",
+    "@netlify/plugin-nextjs": "^5.14.0"
+  }
+}

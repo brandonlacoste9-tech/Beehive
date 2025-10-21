@@ -6,7 +6,14 @@ import { assertServerEnv } from '@/lib/envGuard';
 
 export const runtime = 'nodejs';
 
+function hasSupabaseEnv() {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
 export async function POST(req: NextRequest) {
+  if (!hasSupabaseEnv()) {
+    return NextResponse.json({ ok: false, error: 'supabase env missing' }, { status: 503 });
+  }
   assertServerEnv();
   try {
     const body = await req.json();

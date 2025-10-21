@@ -36,3 +36,16 @@
 - Updated `netlify/functions/codex_review.ts` to import the register function and left a TODO hook for integration.
 
 
+
+## v1.5.0 — Main Codex Inscription (2025-10-20)
+
+### Codex Lineage
+- Inscribed the unified [Codex-Main-Scroll.md](Codex-Main-Scroll.md) with prompting lenses, integration constellation, and deployment rites.
+- Added [Codex-Index-Scroll.md](Codex-Index-Scroll.md) to track seals across the swarm.
+- Documented the Flowing Honey ritual for BEEREEL `/create` and codified smoke tests.
+
+### Operations
+- Introduced `README.deploy.md`, Makefile rituals (`make dev`, `make smoke`, `make build`, `make zip`, `make wiki`), and SwarmKit bundling script.
+- Added Netlify `billing-bridge` function to verify Stripe and Coinbase webhooks.
+- Created smoke harness script (`npm run smoke`) validating the BEEREEL scroll.
+

@@ -1,16 +1,21 @@
-// Server-only Supabase admin client
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-}
+let client: SupabaseClient | null = null;
 
-export const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  {
+export function getSupabaseAdmin(): SupabaseClient {
+  if (client) return client;
+  const url = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) {
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+  }
+  client = createClient(url, serviceKey, {
     auth: { persistSession: false },
     global: { headers: { 'X-Client-Info': 'adgenxai-beehive' } },
-  }
-);
+  });
+  return client;
+}
 
+export function resetSupabaseAdminForTests() {
+  client = null;
+}

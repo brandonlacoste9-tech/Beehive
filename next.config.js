@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: 'standalone',
+  experimental: {
+    typedRoutes: true,
+  },
 };
 
 module.exports = nextConfig;
