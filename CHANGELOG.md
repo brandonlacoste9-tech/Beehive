@@ -20,3 +20,4 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Codex review ritual checklist for API key rotation and workflow restarts.
