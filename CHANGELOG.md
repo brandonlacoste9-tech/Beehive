@@ -20,3 +20,4 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify `codex_spark_deploy` ritual automates Spark artifacts, emits badge metadata, and archives lineage in Codex history.

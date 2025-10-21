@@ -4,3 +4,9 @@
 
 [functions]
   directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/codex/spark/deploy"
+  to = "/.netlify/functions/codex_spark_deploy"
+  status = 200
+  force = true

@@ -1,5 +1,7 @@
 import type { Handler } from '@netlify/functions';
 import { getStore } from '@netlify/blobs';
+import { readSparkStatus } from '../lib/codex_spark_echo';
+import { readCodexHistory } from '../lib/codex_history';
 
 const STORE = 'beehive_badge';
 const HISTORY_KEY = 'history';
@@ -19,6 +21,8 @@ function pruneHistory(list: any[], max = 1000, maxDays = 90) {
 export const handler: Handler = async () => {
   const store = getStore(STORE);
   const history = ((await store.get(HISTORY_KEY, { type: 'json' })) as any[]) || [];
+  const spark = await readSparkStatus();
+  const sparkHistory = await readCodexHistory(20);
 
   const now = Date.now();
   const lastDay = now - 86_400_000;
@@ -44,6 +48,10 @@ export const handler: Handler = async () => {
       last_24h: last24 ? (last24Ok / last24) * 100 : null,
     },
     recent_history: pruneHistory(history, 10),
+    spark_deploy: {
+      current: spark,
+      recent_history: sparkHistory.slice(-10),
+    },
   };
 
   return {
