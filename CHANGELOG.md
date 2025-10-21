@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- New Codex Cloud Ritual scroll documenting delegation flows, security gates, and lineage stewardship.
 
 ### DevOps
 - `/api/health` instance/env guard.
