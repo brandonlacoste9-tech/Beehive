@@ -1,0 +1,50 @@
+name: Codex PR Review (Exec)
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+jobs:
+  codex-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch base
+        run: git fetch --no-tags origin "${{ github.event.pull_request.base.ref }}"
+
+      - name: Run Codex review
+        id: review
+        run: |
+          chmod +x scripts/codex_review_exec.sh
+          scripts/codex_review_exec.sh --base "${{ github.event.pull_request.base.sha }}" --artifact codex_review_findings.txt
+          cat codex_review_findings.txt
+
+      - name: Upload findings
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex_review_findings
+          path: codex_review_findings.txt
+
+      - name: Comment on PR
+        if: env.OPENAI_API_KEY != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `🧠 **Codex Review Findings**\n\n\`\`\`\n${require('fs').readFileSync('codex_review_findings.txt', 'utf8')}\n\`\`\``;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });

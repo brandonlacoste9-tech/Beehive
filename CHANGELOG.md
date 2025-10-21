@@ -1,3 +1,11 @@
+## v1.3.3 — Codex GPT-5 Integration
+
+- Codex executor scripts (`scripts/gpt5_exec.ts` / `scripts/gpt5_exec.mjs`) for GPT-5 Pro via the Responses API.
+- Netlify ritual (`netlify/functions/ritual-gpt5.ts`) exposing a POST gateway with lineage metadata.
+- CI workflow (`.github/workflows/codex_review_exec.yml`) invoking Codex on every PR and storing findings.
+- Local review helper (`scripts/codex_review_exec.sh`) to mirror CI before opening a scroll.
+- Documentation updates (`README.md`, `scrolls/echo-v1.3.3.md`) covering badge, curl example, and broadcast scroll.
+
 ## [DRAFT] v1.0.0 — “Sentiment Sentinel” (2025-10-15)
 
 **Scope:** end-to-end ritual flow online — ingest → mood-aware generation → artifacts → growth telemetry.
