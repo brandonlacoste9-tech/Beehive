@@ -16,6 +16,9 @@
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
 
+### Documentation
+- Added `scrolls/cookbook/wsl-forge.md` to codify WSL placement rituals and linked it from the Tool Invocation registry.
+
 ### DevOps
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
