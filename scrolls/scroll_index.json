@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "prompting_guide",
+    "version": "1.4.5",
+    "enabled": true
   }
 ]

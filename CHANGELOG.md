@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- Registered the **Prompting Guide** scroll (`scrolls/cookbook/prompting-guide.md`) and linked it through the Main Codex contributor guidance.
 
 ### DevOps
 - `/api/health` instance/env guard.
