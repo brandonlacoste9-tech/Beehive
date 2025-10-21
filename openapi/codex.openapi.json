@@ -1,0 +1,128 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CODEX Agents API",
+    "version": "0.1.0",
+    "description": "Namespaced API surface for Bee Swarm agents. Contracts mirror AGENTS.md. Correlate requests with the `x-codex-run` header."
+  },
+  "servers": [{ "url": "/" }],
+  "paths": {
+    "/api/codex/agents/{id}/run": {
+      "post": {
+        "summary": "Run an agent task",
+        "operationId": "codexRun",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/AgentRunRequest" } }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AgentRunResponse" } } } },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Rate Limited" }
+        }
+      }
+    },
+    "/api/codex/agents/{id}/tools/{tool}": {
+      "post": {
+        "summary": "Invoke an agent tool",
+        "operationId": "codexToolInvoke",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "tool", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "type": "object", "additionalProperties": true } }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ToolInvokeResponse" } } } },
+          "400": { "description": "Bad Request" },
+          "429": { "description": "Rate Limited" }
+        }
+      }
+    },
+    "/api/codex/agents/{id}/memory": {
+      "get": {
+        "summary": "List recent memory items",
+        "operationId": "codexMemoryList",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "cursor", "in": "query", "required": false, "schema": { "type": "string", "nullable": true } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MemoryListResponse" } } } },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentRunRequest": {
+        "type": "object",
+        "required": ["task"],
+        "properties": {
+          "task": { "type": "string", "description": "Human instruction or task name" },
+          "inputs": { "type": "object", "additionalProperties": true },
+          "runId": { "type": "string", "nullable": true }
+        }
+      },
+      "AgentRunResponse": {
+        "type": "object",
+        "required": ["ok", "runId"],
+        "properties": {
+          "ok": { "type": "boolean" },
+          "runId": { "type": "string" },
+          "output": { "type": "object", "additionalProperties": true },
+          "tokens": {
+            "type": "object",
+            "properties": {
+              "input": { "type": "integer" },
+              "output": { "type": "integer" }
+            },
+            "nullable": true
+          },
+          "error": { "type": "string", "nullable": true }
+        }
+      },
+      "ToolInvokeResponse": {
+        "type": "object",
+        "required": ["ok", "runId"],
+        "properties": {
+          "ok": { "type": "boolean" },
+          "runId": { "type": "string" },
+          "result": { "type": "object", "additionalProperties": true, "nullable": true },
+          "error": { "type": "string", "nullable": true }
+        }
+      },
+      "MemoryListResponse": {
+        "type": "object",
+        "required": ["ok", "runId", "items"],
+        "properties": {
+          "ok": { "type": "boolean" },
+          "runId": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "type": { "type": "string" },
+                "payload": { "type": "object", "additionalProperties": true },
+                "ts": { "type": "string", "format": "date-time" }
+              }
+            }
+          },
+          "nextCursor": { "type": "string", "nullable": true }
+        }
+      }
+    }
+  }
+}

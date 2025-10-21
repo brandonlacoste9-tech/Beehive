@@ -20,6 +20,9 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+### CODEX Ledger
+- Namespaced agent routes under `/api/codex/agents/*` with run/tool/memory scaffolds and `x-codex-run` correlation headers.
+- Published `/api/codex/openapi` with the CODEX Agents OpenAPI contract and refreshed `AGENTS.md` ledger entries.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers

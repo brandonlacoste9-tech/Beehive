@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "codex_agents_api",
+    "version": "1.0.0-draft",
+    "enabled": true
   }
 ]
