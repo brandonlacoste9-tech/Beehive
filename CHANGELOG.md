@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- Inscribed the **Codex CLI Setup & Usage Scroll** for macOS, Linux, and WSL invocations.
 
 ### DevOps
 - `/api/health` instance/env guard.

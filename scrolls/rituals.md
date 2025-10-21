@@ -18,9 +18,17 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 
 ---
 
-**How to use:**  
-- Review this index before every PR or milestone.  
-- Follow the linked rituals for consistent, audit-ready operations.  
+## 🟢 Tool Invocation Rituals
+- **Codex CLI Setup & Usage Scroll** — [scrolls/codex-cli-setup.md](codex-cli-setup.md)
+  - Illuminates installation, authentication, models, approval modes, and scripting incantations.
+- **Scroll of the WSL Forge** — *pending inscription; pairs with the CLI scroll for Windows adepts.*
+- **Prompting Guide Scroll** — *pending inscription; codifies invocation patterns and prompt sigils.*
+
+---
+
+**How to use:**
+- Review this index before every PR or milestone.
+- Follow the linked rituals for consistent, audit-ready operations.
 - Update this index when new ritual scrolls are added.
 
 ---
