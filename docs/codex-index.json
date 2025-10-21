@@ -1,0 +1,126 @@
+{
+  "meta": {
+    "generatedAt": "2025-10-20T23:55:08.588Z",
+    "jobId": "codex-index-20251020235508",
+    "scrollCount": 8,
+    "totalSizeBytes": 4148
+  },
+  "statuses": {
+    "draft": 8
+  },
+  "scrolls": [
+    {
+      "id": "scroll-advanced-budget-models",
+      "title": "Codex Scroll: Advanced Budget Models",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [
+        "ops@beehive"
+      ],
+      "links": [
+        {
+          "label": "belief_ledger",
+          "url": "bq://adgenxai_ops.belief_ledger"
+        },
+        {
+          "label": "audit",
+          "url": "bq://adgenxai_ops.budget_actions"
+        },
+        {
+          "label": "diagram",
+          "url": "docs/diagrams/coe-bayesian-rl-integration.png"
+        }
+      ],
+      "path": "scrolls/advanced-budget-models.md",
+      "excerpt": "Bayesian + bandit policy for budget allocation; shadow-first with guardrails.",
+      "sizeBytes": 1049
+    },
+    {
+      "id": "scroll-anywhere",
+      "title": "Codex Scroll: BeeHive Anywhere Blueprint",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/beehive-anywhere-blueprint.md",
+      "excerpt": "Run the Hive across environments (cloud, on-prem, air-gapped), with a minimal adapter layer and signed capabilities.",
+      "sizeBytes": 402
+    },
+    {
+      "id": "scroll-budget-adapter",
+      "title": "Codex Scroll: Budget Adapter Service",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [
+        "ads@beehive"
+      ],
+      "links": [],
+      "path": "scrolls/budget-adapter-service.md",
+      "excerpt": "Uniform `/POST {provider}/budget` API to sync directives to ad networks.",
+      "sizeBytes": 609
+    },
+    {
+      "id": "scroll-orchestrator",
+      "title": "Codex Scroll: Campaign Orchestration",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/campaign-orchestration.md",
+      "excerpt": "1) Fetch active campaigns (Registry)",
+      "sizeBytes": 482
+    },
+    {
+      "id": "scroll-governance",
+      "title": "Codex Scroll: Governance Dashboards",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/governance-dashboards.md",
+      "excerpt": "Daily Agent Integrity",
+      "sizeBytes": 348
+    },
+    {
+      "id": "scroll-psa",
+      "title": "Codex Scroll: Predictive Scorecard Agent (PSA)",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/predictive-scorecard-agent.md",
+      "excerpt": "Compute reward r_t and stability flags from ROI/engagement/volatility.",
+      "sizeBytes": 427
+    },
+    {
+      "id": "scroll-rl-trainer",
+      "title": "Codex Scroll: RL Policy Trainer Agent",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/rl-policy-trainer-agent.md",
+      "excerpt": "Replay: join `belief_ledger` × `budget_actions` × rewards",
+      "sizeBytes": 420
+    },
+    {
+      "id": "scroll-viral-forge",
+      "title": "Codex Scroll: Viral Forge Autoproducer (Revenue Intel)",
+      "status": "draft",
+      "version": "0.1.0",
+      "lastUpdated": "2025-10-15",
+      "owners": [],
+      "links": [],
+      "path": "scrolls/viral-forge-autoproducer.md",
+      "excerpt": "Generate hooks/ad copy/montage tuned to live sentiment; export artifacts (.md/.json).",
+      "sizeBytes": 411
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "beehive",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "codex:generate": "tsx scripts/codex/generate-index.ts",
+    "codex:render": "tsx scripts/codex/render-status.ts",
+    "codex:validate": "tsx scripts/codex/validate-index.ts",
+    "codex:check-snapshot": "tsx scripts/codex/check-status-snapshot.ts",
+    "codex:notify": "tsx scripts/codex/notify.ts",
+    "codex:guard": "npm run codex:validate && npm run codex:check-snapshot",
+    "codex:ritual": "npm run codex:generate && npm run codex:render && npm run codex:validate && npm run codex:notify",
+    "smoke": "npm run codex:render && npm run codex:validate && DRY_RUN=true npm run codex:notify",
+    "update-snapshot": "tsx scripts/codex/update-status-snapshot.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "zod": "^3.23.8"
+  }
+}
