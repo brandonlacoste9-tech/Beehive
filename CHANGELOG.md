@@ -20,3 +20,10 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+
+## [1.3.0] — Codex Agent Runner
+
+- Added `ritual-agent.ts` Netlify Function powered by OpenAI Codex.
+- Accepts POST requests with `prompt` field and returns Codex + metadata payloads for observability overlays.
+- Linked function from the homepage directory and repository README with sample replay payload.
+- Documented environment expectations for Netlify deploys.
