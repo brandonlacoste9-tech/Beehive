@@ -1,0 +1,38 @@
+{
+  "$schema": "https://swarm.hivemind.tools/schemas/agent-tasks.v1.json",
+  "version": 1,
+  "tasks": [
+    {
+      "id": "docs-index-refresh",
+      "summary": "Regenerate the Hive ritual documentation index",
+      "description": "Ensure the ritual index in scrolls/rituals.md reflects the latest ceremony scrolls and templates.",
+      "artifacts": [
+        "scrolls/rituals.md",
+        "README.md"
+      ],
+      "ritual": ".github/RITUAL-TEMPLATE.md",
+      "tags": ["docs", "ritual"]
+    },
+    {
+      "id": "mcp-config-verify",
+      "summary": "Validate MCP gateway configuration",
+      "description": "Run the Netlify gateway validation and confirm the MCP endpoints align with codified expectations.",
+      "artifacts": [
+        "docs/codex-netlify-gateway.md",
+        "netlify.toml"
+      ],
+      "script": "npm run mcp:check",
+      "tags": ["mcp", "config"]
+    },
+    {
+      "id": "playwright-smoke",
+      "summary": "Execute Playwright smoke test for ritual flows",
+      "description": "Use the smoke harness to ensure primary UI rituals remain functional before merging.",
+      "artifacts": [
+        "tests/playwright"
+      ],
+      "script": "npm run test:playwright",
+      "tags": ["playwright", "tests", "smoke"]
+    }
+  ]
+}
