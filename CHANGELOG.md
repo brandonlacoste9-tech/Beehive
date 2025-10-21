@@ -20,3 +20,4 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify export ritual stabilized with explicit `package.json` manifest + scripts.
