@@ -16,6 +16,9 @@
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
 
+### Scrolls
+- Added `scrolls/responsible-use-enoch.md` documenting The Enoch responsible-use lineage.
+
 ### DevOps
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
