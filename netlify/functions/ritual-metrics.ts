@@ -1,5 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import { getStore } from '@netlify/blobs';
+import { getCodexHistory, isCodexSuccessStatus } from '../../src/lib/codex_history';
 
 const STORE = 'beehive_badge';
 const HISTORY_KEY = 'history';
@@ -31,6 +32,17 @@ export const handler: Handler = async () => {
   const last24 = recent.length;
   const last24Ok = recent.filter((e) => e.status === 'ok').length;
 
+  const sparkHistory = await getCodexHistory(1000);
+  const sparkTotal = sparkHistory.length;
+  const sparkSuccess = sparkHistory.filter((entry) => isCodexSuccessStatus(entry.status)).length;
+  const sparkFail = sparkHistory.filter((entry) => entry.status === 'failed').length;
+  const sparkRecent = sparkHistory.filter(
+    (entry) => new Date(entry.timestamp).getTime() > lastDay,
+  );
+  const sparkLast24 = sparkRecent.length;
+  const sparkLast24Ok = sparkRecent.filter((entry) => isCodexSuccessStatus(entry.status)).length;
+  const sparkCurrent = sparkTotal ? sparkHistory[sparkTotal - 1] : null;
+
   const payload = {
     version: VERSION,
     current: total ? history[total - 1] : null,
@@ -44,6 +56,19 @@ export const handler: Handler = async () => {
       last_24h: last24 ? (last24Ok / last24) * 100 : null,
     },
     recent_history: pruneHistory(history, 10),
+    codex_spark: {
+      current: sparkCurrent,
+      statistics: {
+        total: sparkTotal,
+        success: sparkSuccess,
+        fail: sparkFail,
+        success_ratio: sparkTotal ? (sparkSuccess / sparkTotal) * 100 : null,
+      },
+      uptime: {
+        last_24h: sparkLast24 ? (sparkLast24Ok / sparkLast24) * 100 : null,
+      },
+      recent_history: pruneHistory(sparkHistory, 10),
+    },
   };
 
   return {

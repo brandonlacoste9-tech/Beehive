@@ -7,6 +7,7 @@ export default function Home() {
         <li><a href="/.netlify/functions/ritual-badge">ritual-badge</a></li>
         <li><a href="/.netlify/functions/ritual-ping">ritual-ping</a></li>
         <li><a href="/.netlify/functions/ritual-metrics">ritual-metrics</a></li>
+        <li><a href="/.netlify/functions/codex-spark-deploy">codex-spark-deploy</a></li>
       </ul>
     </main>
   );
