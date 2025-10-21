@@ -1,0 +1,35 @@
+name: Codex PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  codex-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Codex CLI
+        run: pip install openai
+
+      - name: Run Codex PR Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python scripts/codex_pr_review.py --pr ${{ github.event.pull_request.number }}
+
+      - name: Upload Codex Review Findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-findings
+          path: codex_review_findings.txt
