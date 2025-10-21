@@ -66,11 +66,7 @@ jobs:
             exit 1
           fi
 
-          esc_diff=$(python3 - <<'PY'
-import json
-print(json.dumps(open("pr.diff","r",encoding="utf-8",errors="ignore").read()))
-PY
-)
+          esc_diff=$(python3 -c "import json;print(json.dumps(open('pr.diff','r',encoding='utf-8',errors='ignore').read()))")
 
           body=$(jq -n \
             --arg repo "${{ github.repository }}" \
