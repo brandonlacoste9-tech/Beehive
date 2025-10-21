@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "codex_ci_playbook",
+    "version": "0.9.0",
+    "enabled": true
   }
 ]

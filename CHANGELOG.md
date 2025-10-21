@@ -20,6 +20,9 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+
+### Documentation
+- Captured the Codex CI Integration Playbook in `scrolls/codex-ci-integration-playbook.md`, including export snippets for HTML, Python, and knowledge-base formats.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
