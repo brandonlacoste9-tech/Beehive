@@ -20,6 +20,7 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify Grand Orchestrator now paginates GitHub files, emits CodexReplay job metadata, and pulses the ritual badge ledger on each run.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers

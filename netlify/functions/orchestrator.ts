@@ -1,6 +1,8 @@
+import { Buffer } from "node:buffer";
+import { randomUUID } from "crypto";
 import type { Handler } from "@netlify/functions";
 import { logMutation } from "./_logger";
-import { invokeRitual } from "./_ritual_invocation_helper";
+import { invokeRitual, type RitualInvocationOptions } from "./_ritual_invocation_helper";
 
 type GitHubFile = {
   filename: string;
@@ -20,6 +22,32 @@ type RiskScore = {
   [key: string]: unknown;
 };
 
+type DiffArtifact = {
+  filename: string;
+  patch: string;
+  additions: number;
+  deletions: number;
+};
+
+type WorkerContext = {
+  pr_number?: number;
+  pr_author: string;
+  head_sha?: string;
+  diffs: DiffArtifact[];
+  files: string[];
+  job_id: string;
+};
+
+type OverlayMetadata = {
+  job_id: string;
+  pr_number: number | null;
+  head_sha: string | null;
+  file_count: number;
+  additions: number;
+  deletions: number;
+  patch_bytes: number;
+};
+
 const INTERESTING_ACTIONS = new Set(["opened", "synchronize"]);
 
 function assertEnv(name: string): string {
@@ -28,6 +56,95 @@ function assertEnv(name: string): string {
     throw new Error(`Missing required environment variable: ${name}`);
   }
   return value;
+}
+
+function createFilesEndpoint(prApiUrl: string): URL {
+  const sanitized = prApiUrl.endsWith("/") ? prApiUrl : `${prApiUrl}/`;
+  return new URL(`${sanitized}files`);
+}
+
+async function fetchPullRequestFiles(prApiUrl: string, token: string): Promise<GitHubFile[]> {
+  const perPage = 100;
+  const collected: GitHubFile[] = [];
+  let page = 1;
+
+  const base = createFilesEndpoint(prApiUrl);
+
+  while (true) {
+    const url = new URL(base.toString());
+    url.searchParams.set("per_page", String(perPage));
+    url.searchParams.set("page", String(page));
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => response.statusText);
+      throw new Error(`Failed to retrieve PR files (page ${page}): ${response.status} ${detail}`);
+    }
+
+    const pageData = (await response.json()) as GitHubFile[];
+    collected.push(...pageData);
+
+    if (pageData.length < perPage) {
+      break;
+    }
+
+    page += 1;
+  }
+
+  return collected;
+}
+
+function buildWorkerContext(
+  files: GitHubFile[],
+  prNumber: number | undefined,
+  prAuthor: string,
+  headSha: string | undefined,
+  jobId: string,
+): { context: WorkerContext; metadata: OverlayMetadata } {
+  const diffs: DiffArtifact[] = files.map((file) => ({
+    filename: file.filename,
+    patch: file.patch ?? "",
+    additions: file.additions ?? 0,
+    deletions: file.deletions ?? 0,
+  }));
+
+  const totals = diffs.reduce(
+    (acc, diff) => {
+      acc.additions += diff.additions;
+      acc.deletions += diff.deletions;
+      return acc;
+    },
+    { additions: 0, deletions: 0 },
+  );
+
+  const patchBytes = files.reduce((acc, file) => acc + Buffer.byteLength(file.patch ?? "", "utf8"), 0);
+
+  const metadata: OverlayMetadata = {
+    job_id: jobId,
+    pr_number: prNumber ?? null,
+    head_sha: headSha ?? null,
+    file_count: files.length,
+    additions: totals.additions,
+    deletions: totals.deletions,
+    patch_bytes: patchBytes,
+  };
+
+  const context: WorkerContext = {
+    pr_number: prNumber,
+    pr_author: prAuthor,
+    head_sha: headSha,
+    diffs,
+    files: files.map((file) => file.filename),
+    job_id: jobId,
+  };
+
+  return { context, metadata };
 }
 
 function parseEventBody(body?: string | null): Record<string, unknown> {
@@ -69,47 +186,59 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  const filesResponse = await fetch(`${prApiUrl}/files`, {
-    headers: {
-      Authorization: `Bearer ${githubToken}`,
-      Accept: "application/vnd.github.v3+json",
-    },
-  });
-
-  if (!filesResponse.ok) {
-    const detail = await filesResponse.text().catch(() => filesResponse.statusText);
-    throw new Error(`Failed to retrieve PR files: ${filesResponse.status} ${detail}`);
-  }
-
-  const filesData = (await filesResponse.json()) as GitHubFile[];
-
   const prNumber = pullRequest.number as number | undefined;
   const prAuthor = pullRequest.user?.login ?? "Unknown Steward";
   const headSha = pullRequest.head?.sha as string | undefined;
   const actor = `Worker Bee for @${prAuthor}`;
+  const jobId = randomUUID();
 
-  const context = {
-    pr_number: prNumber,
-    pr_author: prAuthor,
-    head_sha: headSha,
-    diffs: filesData.map((file) => ({
-      filename: file.filename,
-      patch: file.patch ?? "",
-      additions: file.additions ?? 0,
-      deletions: file.deletions ?? 0,
-    })),
-    files: filesData.map((file) => file.filename),
+  const ritualOutputs: Record<string, unknown> = { current_phase: "initial", job_id: jobId };
+  let locusResults: SovereigntyCheck | undefined;
+  let context: WorkerContext | undefined;
+  let overlayMetadata: OverlayMetadata = {
+    job_id: jobId,
+    pr_number: prNumber ?? null,
+    head_sha: headSha ?? null,
+    file_count: 0,
+    additions: 0,
+    deletions: 0,
+    patch_bytes: 0,
   };
 
-  const ritualOutputs: Record<string, unknown> = { current_phase: "initial" };
-  let locusResults: SovereigntyCheck | undefined;
+  const beaconToken = process.env.BEACON_TOKEN;
+  const pingOptions: RitualInvocationOptions | undefined = beaconToken
+    ? { headers: { "x-beehive-token": beaconToken } }
+    : undefined;
 
   const setPhase = (phase: string) => {
     ritualOutputs.current_phase = phase;
     console.log(`Lifecycle Phase: ${phase}`);
   };
 
+  const pingRitual = async (status: "ok" | "fail") => {
+    try {
+      await invokeRitual(
+        "ritual-ping",
+        { actor, status, job_id: jobId, metadata: overlayMetadata },
+        actor,
+        pingOptions,
+      );
+    } catch (pingError) {
+      console.warn("ritual-ping-failed", pingError);
+    }
+  };
+
   try {
+    const filesData = await fetchPullRequestFiles(prApiUrl, githubToken);
+    const built = buildWorkerContext(filesData, prNumber, prAuthor, headSha, jobId);
+    context = built.context;
+    overlayMetadata = built.metadata;
+    ritualOutputs.metadata = overlayMetadata;
+
+    if (!context) {
+      throw new Error("Unable to compose worker context from PR payload.");
+    }
+
     // --- Housekeeping & Nursing ---
     setPhase("Housekeeping & Nursing initiated.");
 
@@ -179,6 +308,8 @@ export const handler: Handler = async (event) => {
         changed_files: context.files,
         pr_author: context.pr_author,
         ritual_outputs: ritualOutputs,
+        job_id: jobId,
+        metrics: overlayMetadata,
       },
       actor,
     );
@@ -187,13 +318,16 @@ export const handler: Handler = async (event) => {
       actor,
       ritual: "orchestrator",
       status: "success",
-      message: `Worker lifecycle completed for PR #${context.pr_number}. Locus PASS.`,
+      message: `Worker lifecycle completed for PR #${context.pr_number}. Locus PASS. Job ${jobId}.`,
       payload: {
         pr_number: context.pr_number,
         locus: locusResults,
         risk: ritualOutputs.risk,
       },
+      metadata: overlayMetadata,
     });
+
+    await pingRitual("ok");
 
     console.log("Mutation loop complete. Broadcasting to hive mirrors.");
     return { statusCode: 200, body: "Hive mutation loop completed successfully." };
@@ -207,11 +341,14 @@ export const handler: Handler = async (event) => {
       status: "failure",
       message,
       payload: {
-        pr_number: context.pr_number,
+        pr_number: context?.pr_number,
         current_phase: ritualOutputs.current_phase,
         locus: locusResults,
       },
+      metadata: overlayMetadata,
     });
+
+    await pingRitual("fail");
 
     return {
       statusCode: 500,

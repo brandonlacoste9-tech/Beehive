@@ -9,6 +9,11 @@ export type RitualInvocationOptions = {
    * process.env.CODEX_CAPABILITY_KEY.
    */
   capabilityKey?: string;
+  /**
+   * Additional headers to include when invoking a ritual. Useful for
+   * propagating bespoke authentication tokens (e.g. swarm beacons).
+   */
+  headers?: Record<string, string>;
 };
 
 export class RitualInvocationError extends Error {
@@ -48,6 +53,7 @@ export async function invokeRitual<T = unknown>(
       "Content-Type": "application/json",
       "x-codex-capability": capabilityKey,
       "x-codex-actor": actor,
+      ...(options.headers ?? {}),
     },
     body: JSON.stringify(payload ?? {}),
   });
