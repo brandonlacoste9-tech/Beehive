@@ -1,0 +1,32 @@
+[
+  {
+    "language": "hi",
+    "file": "locales/hi/common.json",
+    "added_by": "🌀 The swarm remembers — Scaffold Hindi translation scroll",
+    "timestamp": "2025-10-22T00:00:00Z"
+  },
+  {
+    "language": "pt",
+    "file": "locales/pt/common.json",
+    "added_by": "🌀 The swarm remembers — Scaffold Portuguese translation scroll",
+    "timestamp": "2025-10-22T00:00:00Z"
+  },
+  {
+    "language": "sw",
+    "file": "locales/sw/common.json",
+    "added_by": "🌀 The swarm remembers — Scaffold Swahili translation scroll",
+    "timestamp": "2025-10-22T00:00:00Z"
+  },
+  {
+    "language": "zh",
+    "file": "locales/zh/common.json",
+    "added_by": "🌀 The swarm remembers — Scaffold Mandarin translation scroll",
+    "timestamp": "2025-10-22T00:00:00Z"
+  },
+  {
+    "language": "ru",
+    "file": "locales/ru/common.json",
+    "added_by": "🌀 The swarm remembers — Scaffold Russian translation scroll",
+    "timestamp": "2025-10-22T00:00:00Z"
+  }
+]
