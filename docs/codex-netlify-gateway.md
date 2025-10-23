@@ -2,13 +2,15 @@
 
 This repository routes PR reviews through a Netlify Function that calls **GPT-5 Pro** by way of Netlify’s **AI Gateway**. No provider API keys are stored in GitHub&mdash;auth, billing, rate limits, and caching live in Netlify.
 
+The `codex-review.yml` workflow now checks out the PR **head ref**, builds a truncated diff payload, and posts findings back to the pull request so reviewers can respond inline.
+
 ## Flow overview
 
-1. The GitHub Action builds a PR-scoped diff (capped for token size).  
-2. The workflow POSTs JSON to `/.netlify/functions/codex_review`.  
-3. The function invokes `new OpenAI().responses.create({ model: "gpt-5-pro", ... })`.  
-4. Plain-text findings are returned to the workflow.  
-5. The workflow uploads the findings as an artifact and comments on the PR (when applicable).
+1. The GitHub Action checks out `${{ github.event.pull_request.head.ref }}` with `fetch-depth: 0` to guarantee the latest commit tree.
+2. A diff between `base.sha` and `head.sha` is generated, truncated to 200k lines for token safety, and serialized as JSON payload.
+3. The workflow POSTs JSON to `/.netlify/functions/codex_review` with optional `maxOutputTokens` coming from repository variables.
+4. The function invokes `new OpenAI().responses.create({ model: "gpt-5-pro", ... })` and caches successful responses when available.
+5. Findings return to the workflow, are uploaded as an artifact, streamed into the run summary, and posted to the PR via a persistent `codex-review` comment.
 
 ## Prerequisites
 
@@ -39,5 +41,7 @@ curl -sS -X POST "$SITE_URL/.netlify/functions/codex_review" \
 ## Notes
 
 - The function performs a best-effort cache using the Web Cache API when available; misses are tagged via the `x-codex-cache` header.  
-- Diff payload is truncated in the workflow (first 200k lines) to control token usage&mdash;adjust as needed.
+- Diff payload is truncated in the workflow (first 200k lines by default) to control token usage&mdash;override `DIFF_LINE_LIMIT` if required.
+- Concurrency guard (`codex-review-${{ github.event.pull_request.number }}`) prevents duplicate Netlify calls during rapid pushes.
+- Findings include appended metadata (`jobId`, `attempt`, `status`, `artifact`) for CodexReplay overlays and badge updates.
 
