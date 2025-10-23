@@ -20,6 +20,8 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Reviewer rituals now summon domain stewards via Netlify `reviewer-summoner` function with draft detection, full file pagination, and overlay-ready telemetry.
+- Supabase ledger utility (`logMutation`) captures every summon outcome for lineage replay.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
