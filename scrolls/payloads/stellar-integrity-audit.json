@@ -1,0 +1,20 @@
+{
+  "extension": "stellar_integrity_audit",
+  "version": "1.0.0",
+  "genesis": {
+    "calibrationWindow": "2025-10-15T00:00:00Z/2025-10-19T23:59:59Z",
+    "stableSampleSize": 144,
+    "stabilityFloor": 0.987,
+    "driftTolerance": 0.004
+  },
+  "stability": {
+    "spectralBalance": 0.992,
+    "residualDrift": 0.0031,
+    "signalToNoise": 18.5
+  },
+  "codexReplay": {
+    "jobId": "stellar-integrity-audit-2025-10-20T04-44Z",
+    "status": "exported",
+    "sizeBytes": 40960
+  }
+}
