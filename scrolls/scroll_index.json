@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "release_notes",
+    "version": "2.0.1",
+    "enabled": true
   }
 ]
