@@ -18,5 +18,25 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "smoke_test_ritual",
+    "version": "1.5.0",
+    "enabled": true
+  },
+  {
+    "name": "risk_score_ritual",
+    "version": "1.5.0",
+    "enabled": true
+  },
+  {
+    "name": "label_pr_ritual",
+    "version": "1.5.0",
+    "enabled": true
+  },
+  {
+    "name": "predict_todos_ritual",
+    "version": "1.5.0",
+    "enabled": true
   }
 ]

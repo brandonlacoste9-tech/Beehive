@@ -18,9 +18,28 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 
 ---
 
-**How to use:**  
-- Review this index before every PR or milestone.  
-- Follow the linked rituals for consistent, audit-ready operations.  
+## 🟢 Netlify Ritual Automations (v1.5.0)
+- **Function:** `/.netlify/functions/smoke-test`
+- **Purpose:** Runs post-deploy smoke tests against preview URLs, logs to Supabase, and comments back on the PR.
+- **UI Trigger:** Dashboard → Ritual Control Panel → “Run smoke tests”.
+
+- **Function:** `/.netlify/functions/risk-score`
+- **Purpose:** Scores the current patch via Gemini, highlighting risky files, heavy churn, and config changes.
+- **UI Trigger:** Dashboard → Ritual Control Panel → “Score patch risk”.
+
+- **Function:** `/.netlify/functions/label-pr`
+- **Purpose:** Applies GitHub labels inferred from touched paths (infra, auth, routing, dependencies, scripts).
+- **UI Trigger:** Dashboard → Ritual Control Panel → “Label PR”.
+
+- **Function:** `/.netlify/functions/predict-todos`
+- **Purpose:** Synthesizes immediate TODOs and follow-up work from the diff and posts them to the PR conversation.
+- **UI Trigger:** Dashboard → Ritual Control Panel → “Predict TODOs”.
+
+---
+
+**How to use:**
+- Review this index before every PR or milestone.
+- Follow the linked rituals for consistent, audit-ready operations.
 - Update this index when new ritual scrolls are added.
 
 ---
