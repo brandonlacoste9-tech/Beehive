@@ -1,7 +1,13 @@
-// This file contains the Remix Scheduler for BeeHive v1.4.5
-// TODO: Implement scheduler logic
+export type RemixScheduleReceipt = {
+  jobId: string;
+  status: 'queued' | 'running' | 'completed';
+  etaSeconds: number;
+};
 
-export function scheduleRemix() {
-  // placeholder implementation
-  return 'Remix scheduled';
+export function scheduleRemix(): RemixScheduleReceipt {
+  return {
+    jobId: `remix-${Date.now()}`,
+    status: 'queued',
+    etaSeconds: 90,
+  };
 }

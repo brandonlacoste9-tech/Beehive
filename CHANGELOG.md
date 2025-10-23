@@ -1,3 +1,14 @@
+## v1.5.0 — “Grand Launch” (2025-10-21)
+
+### Ritual Intelligence
+- Sealed the Grand Launch orchestrator (`initiateGrandLaunch`) linking the invocation protocol, immutable ledger, and launch helpers.
+- Registered Codex scrolls via `registerCodexScrolls()` so Netlify entrypoints preload the launch registry.
+- Added `resolveGrandLaunchLedger()` to surface immutable launch history for Codex Replay overlays.
+- Introduced overlay telemetry (`GrandLaunchOutcome.overlay`, `collectGrandLaunchOverlays`, `resolveGrandLaunchOverlays()`) and seeded Netlify globals for CodexReplay widgets so jobId, badge, and stage data stay visible during exports.
+
+### Lineage & Scrolls
+- Authored `scrolls/grand-launch-ritual.md` documenting the Ritual of the First Bloom and indexed it in `scrolls/scroll_index.json`.
+
 ## [DRAFT] v1.0.0 — “Sentiment Sentinel” (2025-10-15)
 
 **Scope:** end-to-end ritual flow online — ingest → mood-aware generation → artifacts → growth telemetry.
