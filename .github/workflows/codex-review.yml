@@ -26,6 +26,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/checkout@v4
         with:
+          # Follow the head ref directly; merge refs can evaporate when PRs close or rebases stall.
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
