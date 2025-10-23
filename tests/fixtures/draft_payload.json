@@ -1,0 +1,5 @@
+{
+  "title": "How we tune Codex agents",
+  "body": "We orchestrated n8n, Appify, and Claude into a replayable chain. The system ingests proven hooks, runs Perplexity validation, and drafts with Sonnet.",
+  "cta": "Where should we point the next experiment?"
+}

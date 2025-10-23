@@ -1,0 +1,54 @@
+name: Content Agent CI
+
+on:
+  push:
+    branches:
+      - work
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'workflows/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - '.github/workflows/content-agent-ci.yml'
+      - '.env.example'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      CONTENT_AGENT_APIFY_TOKEN: dummy-token
+      CONTENT_AGENT_APPIFY_TOPIC_ACTOR: user~topic-intake
+      CONTENT_AGENT_LINKEDIN_AUTHOR: 000000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
+      - name: Dry-run Appify scrape
+        run: |
+          mkdir -p artifacts
+          python scripts/scrape_appify.py --topic "automation" --job-id ci-ingress --dry-run > artifacts/appify-dry-run.json
+      - name: Validate Perplexity output
+        run: |
+          python scripts/validate_perplexity.py --fixture tests/fixtures/perplexity_sample.json --job-id ci-validate > artifacts/validation-log.ndjson
+      - name: Dry-run LinkedIn publish
+        env:
+          CONTENT_AGENT_LINKEDIN_AUTHOR: 000000
+        run: |
+          python scripts/publish_linkedin.py --draft tests/fixtures/draft_payload.json --job-id ci-publish --dry-run > artifacts/dry-run-payload.json
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-agent-dry-run
+          path: artifacts/
+          retention-days: 7
