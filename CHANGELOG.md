@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- Marketing surface rebuilt around PJ Ace narrative: hero, feature highlights, Creator Showcase, case study templates, and product/developer landing pages aligned to AdGenXAI workflows.
 
 ### DevOps
 - `/api/health` instance/env guard.
