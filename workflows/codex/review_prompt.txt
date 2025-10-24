@@ -1,0 +1,10 @@
+Codex Sentinel Ritual
+----------------------
+
+Input: Pull request diff, metadata, lineage context.
+
+1. Cross-check prompts against docs/prompts.md guardrails.
+2. Ensure `.github/workflows/content-agent-ci.yml` includes dry-run mode and retries ≤3.
+3. Confirm n8n workflow uses env expressions (no plain secrets) and includes human approval node.
+4. Validate scripts emit JSON logs with jobId, stage, status, checksum.
+5. Output JSON verdict: {"status": "approve|revise", "notes": [...], "evidence": [{"path": str, "lines": str}]}.

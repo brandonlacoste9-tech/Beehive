@@ -1,0 +1,45 @@
+name: Codex Sentinel Review
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'workflows/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+
+jobs:
+  sentinel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate prompt registry
+        run: |
+          test -f docs/prompts.md
+          test -f workflows/codex/review_prompt.txt
+          test -f workflows/codex/pr_comment.md
+      - name: Ensure n8n workflow uses env vars and approval gate
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          workflow = json.loads(Path('workflows/n8n/content_agent_main.json').read_text())
+          names = {node['name'] for node in workflow['nodes']}
+          if 'Await Approval' not in names:
+              raise SystemExit('Await Approval node missing')
+          for node in workflow['nodes']:
+              if node['type'] == 'n8n-nodes-base.httpRequest':
+                  body = json.dumps(node['parameters'])
+                  if '{{$env.' not in body:
+                      raise SystemExit(f"Node {node['name']} missing environment binding")
+          PY
+      - name: Confirm scripts emit JSON logs
+        run: |
+          python - <<'PY'
+          import inspect
+          from scripts.utils import formatting
+          source = inspect.getsource(formatting.emit_log)
+          required = ['"jobId"', '"stage"', '"status"']
+          if not all(r in source for r in required):
+              raise SystemExit('emit_log missing required fields')
+          PY

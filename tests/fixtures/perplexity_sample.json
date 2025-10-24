@@ -1,0 +1,14 @@
+{
+  "facts": [
+    {
+      "statement": "Automation-savvy marketers report saving 12 hours per week when orchestrating n8n-first pipelines.",
+      "source_url": "https://example.com/automation-report",
+      "published_at": "2025-01-15T00:00:00Z"
+    },
+    {
+      "statement": "Perplexity usage grew 3x among marketing ops teams in 2024 according to GrowthOps Index.",
+      "source_url": "https://growthops.example/research",
+      "published_at": "2025-02-10T00:00:00Z"
+    }
+  ]
+}

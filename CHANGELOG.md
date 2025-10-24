@@ -1,3 +1,11 @@
+## [DRAFT] v1.5.0 — “Codex Content Agent” (2025-11-01)
+
+### Lineage
+- Added Codex-compatible AI content agent architecture and documentation (`docs/architecture.md`, `docs/prompts.md`, `docs/codex_quickstart.md`).
+- Introduced n8n workflow (`workflows/n8n/content_agent_main.json`) with env-bound connectors and human approval gate.
+- Delivered Codex agent pack (`workflows/codex/*`) and CI rituals (`.github/workflows/*.yml`).
+- Published Python scripts with dry-run + logging utilities and fixtures (`scripts/`, `tests/`).
+
 ## [DRAFT] v1.0.0 — “Sentiment Sentinel” (2025-10-15)
 
 **Scope:** end-to-end ritual flow online — ingest → mood-aware generation → artifacts → growth telemetry.
