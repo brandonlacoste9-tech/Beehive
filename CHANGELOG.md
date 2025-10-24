@@ -36,3 +36,9 @@
 - Updated `netlify/functions/codex_review.ts` to import the register function and left a TODO hook for integration.
 
 
+## v1.4.6 — Grand Codex Scroll (2025-10-21)
+
+### Preservation Wave Codex
+- Sealed `scrolls/grand-codex-scroll-2025-10-21.md` as the unified lineage record for CLI rituals, manifests, web builds, Veo prompts, and Gemini research.
+- Extended `scrolls/scroll_index.json` with the `grand_codex_scroll` pointer for CodexReplay overlays.
+
