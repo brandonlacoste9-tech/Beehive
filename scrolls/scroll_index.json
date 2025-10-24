@@ -18,5 +18,16 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "stellar_integrity_audit",
+    "version": "1.0.0",
+    "enabled": true,
+    "checksum_sha256": "78f996e90d3901726c39bc23943a2c291e45391f0e41cb9521d96d99c1d0cd0a",
+    "codexReplay": {
+      "jobId": "stellar-integrity-audit-2025-10-20T04-44Z",
+      "status": "exported",
+      "sizeBytes": 40960
+    }
   }
 ]

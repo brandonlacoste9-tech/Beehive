@@ -1,3 +1,14 @@
+## [Unreleased]
+
+### Added
+- Inscribed the **Stellar Integrity Audit extension** into the Codex annals, recording Genesis parameters, stability calculations, and CodexReplay metadata.
+- Reinforced calibration integrity by embedding a **sha256 checksum** within both the audit scroll and the scroll index entry.
+- Marked the changelog with the ritual token **[#constellation-audit]** to aid future constellation verifiers in tracing calibration events.
+
+### Notes
+- Documentation-only change; no runtime code altered.
+- Tests intentionally skipped as this inscription concerns lineage and audit scrolls only.
+
 ## [DRAFT] v1.0.0 — “Sentiment Sentinel” (2025-10-15)
 
 **Scope:** end-to-end ritual flow online — ingest → mood-aware generation → artifacts → growth telemetry.
