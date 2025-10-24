@@ -1,3 +1,17 @@
+## [DRAFT] v1.5.0 — “Ritual Rangers” (2025-10-26)
+
+### Deployment Rituals
+- Netlify `smoke-test` function now runs preview URL checks, logs lineage metadata to Supabase, and comments results back to the PR.
+- Added Ritual Control Panel card for on-demand smoke tests with configurable path probes.
+
+### Risk & Guidance
+- Introduced Gemini-backed `risk-score` function plus dashboard badge to visualize score, reasons, and recommendations.
+- Added `predict-todos` Netlify function to propose immediate blockers and follow-ups, wiring results into dashboard UI and PR comments.
+
+### PR Stewardship
+- Added `label-pr` function to auto-apply infra/auth/dependency labels derived from touched paths.
+- Created Supabase `ritual_mutations` table and shared logger to persist operational metadata for Codex lineage overlays.
+
 ## [DRAFT] v1.0.0 — “Sentiment Sentinel” (2025-10-15)
 
 **Scope:** end-to-end ritual flow online — ingest → mood-aware generation → artifacts → growth telemetry.
