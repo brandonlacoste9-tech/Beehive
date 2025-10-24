@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- Documented AdGenXAI homepage ritual architecture in `scrolls/adgenxai-homepage-analysis.md`.
 
 ### DevOps
 - `/api/health` instance/env guard.
