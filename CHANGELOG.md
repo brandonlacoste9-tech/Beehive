@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- DeepWiki Layered Mirror unification scroll drafted for swarm-wide documentation alignment.
 
 ### DevOps
 - `/api/health` instance/env guard.

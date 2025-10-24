@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "deepwiki_layered_mirror_unification",
+    "version": "0.1.0",
+    "enabled": true
   }
 ]
