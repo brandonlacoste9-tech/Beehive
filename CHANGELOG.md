@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- Canonical Codex onboarding scroll sealed and linked from the Main Codex charter.
 
 ### DevOps
 - `/api/health` instance/env guard.
