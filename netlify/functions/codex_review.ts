@@ -1,8 +1,41 @@
-// TODO: call registerCodexScrolls() to integrate Codex scrolls for BeeHive v1.4.5
+// Preload Codex Grand Launch scrolls so BeeHive telemetry is available inside Netlify.
 import { OpenAI } from "openai";
 
 import { registerCodexScrolls } from '../../src/context/ace-pack';
 
+const registry = registerCodexScrolls();
+const overlaySnapshot = registry.orchestrator.overlays();
+
+if (typeof globalThis !== 'undefined') {
+  (globalThis as Record<string, unknown>).__codexGrandLaunchOverlays = overlaySnapshot;
+  (globalThis as Record<string, unknown>).__codexGrandLaunchOverlayUpdatedAt = new Date().toISOString();
+}
+
+
+function overlayHeaders(): Record<string, string> {
+  if (typeof globalThis === 'undefined') {
+    return {};
+  }
+  const globalRef = globalThis as Record<string, unknown>;
+  const overlays = globalRef.__codexGrandLaunchOverlays;
+  if (!Array.isArray(overlays) || overlays.length === 0) {
+    return {};
+  }
+  const latest = overlays[overlays.length - 1];
+  try {
+    const headerValue = JSON.stringify(latest);
+    const headers: Record<string, string> = {
+      'x-codex-overlay': headerValue,
+    };
+    const updatedAt = globalRef.__codexGrandLaunchOverlayUpdatedAt;
+    if (typeof updatedAt === 'string') {
+      headers['x-codex-overlay-updated-at'] = updatedAt;
+    }
+    return headers;
+  } catch {
+    return {};
+  }
+}
 
 export const config = {
   // Optional: set a friendly route if desired, e.g.:
@@ -21,9 +54,10 @@ type Payload = {
 };
 
 function ok(text: string, headers: Record<string, string> = {}) {
+  const overlay = overlayHeaders();
   return new Response(text, {
     status: 200,
-    headers: { "content-type": "text/plain; charset=utf-8", ...headers },
+    headers: { 'content-type': 'text/plain; charset=utf-8', ...overlay, ...headers },
   });
 }
 

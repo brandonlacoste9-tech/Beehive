@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "grand_launch_ritual",
+    "version": "1.0.0",
+    "enabled": true
   }
 ]

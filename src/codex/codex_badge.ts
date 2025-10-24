@@ -1,6 +1,15 @@
-// This file defines the Codex Badge for BeeHive v1.4.5
-// TODO: Implement the badge component or logic
+export type CodexBadge = {
+  id: string;
+  label: string;
+  issuedAt: string;
+  status: 'minted' | 'revoked';
+};
 
-export function codexBadge() {
-  return 'Codex badge placeholder';
+export function codexBadge(label = 'Grand Launch Badge'): CodexBadge {
+  return {
+    id: `badge-${Date.now()}`,
+    label,
+    issuedAt: new Date().toISOString(),
+    status: 'minted',
+  };
 }
