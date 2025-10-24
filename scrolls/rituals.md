@@ -16,10 +16,14 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 - **File:** `.github/post-merge-checklist.md`
 - **Purpose:** Guides verification of deployments, dashboard integrity, and documentation after every merge.
 
+## 🟡 WSL Forge Smoke Test
+- **File:** `docs/wsl-forge.md`
+- **Purpose:** Validates the Codex Netlify function from a Windows Subsystem for Linux shell and documents troubleshooting steps.
+
 ---
 
-**How to use:**  
-- Review this index before every PR or milestone.  
+**How to use:**
+- Review this index before every PR or milestone.
 - Follow the linked rituals for consistent, audit-ready operations.  
 - Update this index when new ritual scrolls are added.
 

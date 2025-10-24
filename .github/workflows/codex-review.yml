@@ -1,0 +1,160 @@
+name: Codex Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - unlocked
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  codex-review:
+    name: Invoke Codex Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    env:
+      DIFF_PATH: codex_review.diff
+      TRUNCATED_DIFF_PATH: codex_review_diff_truncated.patch
+      PAYLOAD_PATH: codex_review_payload.json
+      FINDINGS_PATH: codex_review_findings.txt
+      DIFF_LINE_LIMIT: "200000"
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Configure Git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Build PR diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags origin "${{ github.event.pull_request.base.ref }}"
+          git diff --binary --no-color "$BASE_SHA" "$HEAD_SHA" > "$DIFF_PATH"
+
+      - name: Truncate diff for Codex payload
+        run: |
+          python - <<'PY'
+import os
+from pathlib import Path
+
+diff_path = Path(os.environ["DIFF_PATH"])
+out_path = Path(os.environ["TRUNCATED_DIFF_PATH"])
+limit = int(os.environ.get("DIFF_LINE_LIMIT", "200000"))
+
+lines_written = 0
+with diff_path.open("r", encoding="utf-8", errors="replace") as src, out_path.open("w", encoding="utf-8") as dst:
+    for line in src:
+        if lines_written >= limit:
+            dst.write("\n# --- Codex Review: diff truncated to {limit} lines ---\n".format(limit=limit))
+            break
+        dst.write(line)
+        lines_written += 1
+
+if lines_written == 0:
+    out_path.write_text("# No diff available for Codex review.\n", encoding="utf-8")
+PY
+
+      - name: Compose Codex payload
+        env:
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+          MAX_OUTPUT: ${{ vars.CODEX_MAX_OUTPUT_TOKENS || '600' }}
+        run: |
+          python - <<'PY'
+import json
+import os
+from pathlib import Path
+
+payload = {
+    "repo": os.environ["REPO"],
+    "pr": os.environ["PR_NUMBER"],
+    "base": os.environ["BASE_SHA"],
+    "head": os.environ["HEAD_SHA"],
+    "title": os.environ.get("TITLE", "") or "",
+    "body": os.environ.get("BODY", "") or "",
+    "diff": Path(os.environ["TRUNCATED_DIFF_PATH"]).read_text(encoding="utf-8"),
+    "maxOutputTokens": int(os.environ.get("MAX_OUTPUT", "600") or "600"),
+}
+
+Path(os.environ["PAYLOAD_PATH"]).write_text(
+    json.dumps(payload, ensure_ascii=False),
+    encoding="utf-8",
+)
+PY
+
+      - name: Invoke Codex review
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SITE_URL" ]; then
+            echo "::error::SITE_URL secret is not configured." >&2
+            exit 1
+          fi
+          curl -sS -X POST "$SITE_URL/.netlify/functions/codex_review" \
+            -H 'content-type: application/json' \
+            --data-binary @"$PAYLOAD_PATH" \
+            --retry 2 \
+            --retry-delay 5 \
+            --fail \
+            --output "$FINDINGS_PATH"
+          cat "$FINDINGS_PATH"
+
+      - name: Append Codex metadata
+        run: |
+          {
+            echo "";
+            echo "---";
+            echo "jobId: $GITHUB_RUN_ID";
+            echo "attempt: $GITHUB_RUN_ATTEMPT";
+            echo "status: success";
+            echo "artifact: $FINDINGS_PATH";
+          } >> "$FINDINGS_PATH"
+
+      - name: Upload Codex findings artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-review-findings
+          path: ${{ env.FINDINGS_PATH }}
+          if-no-files-found: error
+
+      - name: Summarize Codex findings
+        run: |
+          {
+            echo "## Codex Review Findings";
+            echo "";
+            echo "- jobId: $GITHUB_RUN_ID";
+            echo "- attempt: $GITHUB_RUN_ATTEMPT";
+            echo "- artifact: $FINDINGS_PATH";
+            echo "";
+            cat "$FINDINGS_PATH";
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment findings on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body-path: ${{ env.FINDINGS_PATH }}
+          comment-identifier: codex-review
+          edit-mode: replace
