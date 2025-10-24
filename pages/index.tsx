@@ -1,3 +1,5 @@
+import BroadcastActions from '../src/components/BroadcastActions';
+
 export default function Home() {
   return (
     <main style={{ padding: 24, fontFamily: 'system-ui' }}>
@@ -8,6 +10,7 @@ export default function Home() {
         <li><a href="/.netlify/functions/ritual-ping">ritual-ping</a></li>
         <li><a href="/.netlify/functions/ritual-metrics">ritual-metrics</a></li>
       </ul>
+      <BroadcastActions />
     </main>
   );
 }

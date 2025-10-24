@@ -16,10 +16,14 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 - **File:** `.github/post-merge-checklist.md`
 - **Purpose:** Guides verification of deployments, dashboard integrity, and documentation after every merge.
 
+## 🟡 Broadcast Relays
+- **File:** `scrolls/broadcast_relays.md`
+- **Purpose:** Details the Netlify broadcast functions, dashboard triggers, and PowerShell helpers for Codex rituals.
+
 ---
 
-**How to use:**  
-- Review this index before every PR or milestone.  
+**How to use:**
+- Review this index before every PR or milestone.
 - Follow the linked rituals for consistent, audit-ready operations.  
 - Update this index when new ritual scrolls are added.
 
