@@ -20,6 +20,8 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify `release-notes` function logs merged PRs to `CHANGELOG.md`, GitHub comments, and the Supabase release ledger.
+- Hardened the `release-notes` ritual to safely encode target branches when fetching and updating the changelog.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
