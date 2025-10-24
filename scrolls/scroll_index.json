@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "codex_broadcast",
+    "version": "1.4.6",
+    "enabled": true
   }
 ]
