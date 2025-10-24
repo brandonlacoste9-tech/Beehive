@@ -18,5 +18,15 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "codex_mutations",
+    "version": "1.5.0",
+    "enabled": true
+  },
+  {
+    "name": "mutation_feed",
+    "version": "1.5.0",
+    "enabled": true
   }
 ]

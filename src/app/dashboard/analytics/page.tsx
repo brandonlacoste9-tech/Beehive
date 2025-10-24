@@ -1,6 +1,7 @@
-import SentimentCard from '@/components/SentimentCard';
 import LineageCard from '@/components/LineageCard';
 import SentimentHistogram from '@/components/SentimentHistogram';
+import MutationFeedClient from '@/components/MutationFeedClient';
+import SentimentCard from '@/components/SentimentCard';
 
 export default function AnalyticsPage() {
   return (
@@ -11,6 +12,7 @@ export default function AnalyticsPage() {
         <LineageCard />
       </div>
       <SentimentHistogram hours={24} />
+      <MutationFeedClient />
     </main>
   );
 }

@@ -16,6 +16,10 @@ A centralized registry for operational rituals in the Beehive repository. Every 
 - **File:** `.github/post-merge-checklist.md`
 - **Purpose:** Guides verification of deployments, dashboard integrity, and documentation after every merge.
 
+## 🟢 Codex Broadcast Ritual
+- **File:** `scripts/powershell/Codex.psm1`
+- **Purpose:** Issues PR, Gist, Netlify, or Discord broadcasts while inscribing mutation logs with actor headers.
+
 ---
 
 **How to use:**  
