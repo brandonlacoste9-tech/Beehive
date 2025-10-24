@@ -18,5 +18,13 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "stellar_integrity_audit",
+    "version": "1.0.0-draft",
+    "enabled": true,
+    "checksum_sha256": "5d8be891afd30b59fe654cc2b6270c8c64bad3388642c54efab508a632fbbfb9",
+    "hash_algorithm": "sha256",
+    "verifier_script": "scripts/verify_scroll_checksum.py"
   }
 ]

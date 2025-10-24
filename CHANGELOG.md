@@ -16,6 +16,10 @@
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
 
+### Scrolls & Rituals
+- Constellation Audit: Sealed `scrolls/stellar-integrity-audit.md` with measured Genesis data and the derived stability calculus for the Communal Constellation ritual. [#constellation-audit]
+- Constellation Audit: Added `scripts/verify_scroll_checksum.py` and indexed checksum metadata so lineage keepers can auto-verify the seal. [#constellation-audit]
+
 ### DevOps
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
