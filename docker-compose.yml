@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    image: beehive-dev
+    container_name: beehive-app
+    volumes:
+      - .:/workspace
+      - ~/.ssh:/home/node/.ssh:ro
+    env_file:
+      - .env.local
+    ports:
+      - 3000:3000
+      - 9222:9222 # Playwright browser
+    depends_on:
+      - postgres
+      - redis
+      - browser
+    command: sleep infinity
+  postgres:
+    image: postgres:15
+    container_name: beehive-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: beehive
+      POSTGRES_PASSWORD: beehive
+      POSTGRES_DB: beehive
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    container_name: beehive-redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    volumes:
+      - redisdata:/data
+  browser:
+    image: mcr.microsoft.com/playwright:v1.44.0-focal
+    container_name: beehive-browser
+    shm_size: 2gb
+    ports:
+      - 9222:9222
+    command: ["npx", "playwright", "run-server", "--port=9222"]
+volumes:
+  pgdata:
+  redisdata:

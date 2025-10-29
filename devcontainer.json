@@ -1,0 +1,15 @@
+{
+  "name": "Beehive DevContainer",
+  "dockerFile": "Dockerfile",
+  "context": ".",
+  "runArgs": ["--init"],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "forwardPorts": [3000, 5432, 6379, 9222],
+  "postCreateCommand": "pnpm install || npm install",
+  "mounts": [
+    "source=${localWorkspaceFolder}/.env.local,target=/workspace/.env.local,type=bind,consistency=cached"
+  ],
+  "remoteUser": "node"
+}
