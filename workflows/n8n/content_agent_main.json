@@ -1,0 +1,856 @@
+{
+  "name": "Codex Content Agent",
+  "nodes": [
+    {
+      "id": "start",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "setJob",
+      "name": "Set Job Context",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "jobId",
+              "value": "={{$json.jobId || $env.CONTENT_AGENT_DEFAULT_JOB_ID || 'demo-job'}}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "fetchManifest",
+      "name": "Fetch Job Manifest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        660,
+        300
+      ],
+      "parameters": {
+        "url": "={{$env.CONTENT_AGENT_SUPABASE_REST_URL}}/rest/v1/content_jobs",
+        "options": {
+          "queryParametersUi": {
+            "parameter": [
+              {
+                "name": "id",
+                "value": "eq.{{$json.jobId}}"
+              }
+            ]
+          },
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "apikey",
+                "value": "={{$env.CONTENT_AGENT_SUPABASE_SERVICE_KEY}}"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_SUPABASE_SERVICE_KEY}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "normalize",
+      "name": "Normalize Manifest",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        870,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const job = items[0].json[0] || {};\nreturn [{ json: {\n  jobId: $json.jobId,\n  topic: job.topic || job.keyword || 'automation marketing',\n  persona: job.persona || 'growth marketer',\n  maxResults: job.max_results || 20\n}}];"
+      }
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1080,
+        160
+      ],
+      "parameters": {
+        "url": "=https://api.apify.com/v2/acts/{{$env.CONTENT_AGENT_APIFY_YOUTUBE_ACTOR}}/run-sync-get-dataset-items",
+        "options": {
+          "bodyParametersJson": "={{$json.youtubeRequest}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "twitter",
+      "name": "X Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1080,
+        440
+      ],
+      "parameters": {
+        "url": "=https://api.apify.com/v2/acts/{{$env.CONTENT_AGENT_APIFY_TWITTER_ACTOR}}/run-sync-get-dataset-items",
+        "options": {
+          "bodyParametersJson": "={{$json.twitterRequest}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "buildHarvestRequests",
+      "name": "Build Harvest Requests",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const payloadBase = { token: $env.CONTENT_AGENT_APIFY_TOKEN, input: { language: 'en', maxItems: $json.maxResults } };\nconst youtubePayload = { ...payloadBase, input: { ...payloadBase.input, searchTerm: $json.topic } };\nconst twitterPayload = { ...payloadBase, input: { ...payloadBase.input, queries: [$json.topic] } };\nreturn [{ json: {\n  jobId: $json.jobId,\n  topic: $json.topic,\n  maxResults: $json.maxResults,\n  youtubeRequest: JSON.stringify(youtubePayload),\n  twitterRequest: JSON.stringify(twitterPayload)\n}}];"
+      }
+    },
+    {
+      "id": "merge",
+      "name": "Merge Harvests",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        300
+      ],
+      "parameters": {
+        "mode": "combine",
+        "join": "outer"
+      }
+    },
+    {
+      "id": "aggregate",
+      "name": "Aggregate Corpus",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const crypto = require('crypto');\nconst youtube = items[0].json || [];\nconst twitter = items[1]?.json || [];\nconst transcripts = Array.isArray(youtube) ? youtube.map(v => v.transcript || '').join('\\n\\n') : '';\nconst tweets = Array.isArray(twitter) ? twitter.map(t => t.fullText || t.text || '').join('\\n') : '';\nconst corpus = `${transcripts}\\n\\n${tweets}`.slice(0, 12000);\nreturn [{ json: {\n  jobId: $items('Build Harvest Requests')[0].json.jobId,\n  topic: $items('Build Harvest Requests')[0].json.topic,\n  corpus,\n  youtubeChecksum: crypto.createHash('sha256').update(transcripts).digest('hex'),\n  twitterChecksum: crypto.createHash('sha256').update(tweets).digest('hex')\n}}];"
+      }
+    },
+    {
+      "id": "ideationPayload",
+      "name": "Build Ideation Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1690,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const payload = {\n  model: $env.CONTENT_AGENT_GPT4O_MODEL,\n  messages: [\n    { role: 'system', content: 'Follow the gpt4o_ideation scroll.' },\n    { role: 'user', content: JSON.stringify({ harvest_corpus: $json.corpus }) }\n  ],\n  temperature: 0.4,\n  max_tokens: 1200\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  topic: $json.topic,\n  corpus: $json.corpus,\n  youtubeChecksum: $json.youtubeChecksum,\n  twitterChecksum: $json.twitterChecksum,\n  ideationRequest: JSON.stringify(payload)\n}}];"
+      }
+    },
+    {
+      "id": "ideation",
+      "name": "Generate Ideas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1890,
+        300
+      ],
+      "parameters": {
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "options": {
+          "bodyParametersJson": "={{$json.ideationRequest}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_OPENROUTER_KEY}}"
+              },
+              {
+                "name": "HTTP-Referer",
+                "value": "={{$env.CONTENT_AGENT_HTTP_REFERRER}}"
+              },
+              {
+                "name": "X-Title",
+                "value": "Codex-Ideation"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "extractIdeas",
+      "name": "Extract Ideas",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2090,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const content = items[0].json.data?.choices?.[0]?.message?.content || items[0].json.choices?.[0]?.message?.content || '[]';\nreturn [{ json: {\n  jobId: $items('Build Ideation Request')[0].json.jobId,\n  topic: $items('Build Ideation Request')[0].json.topic,\n  corpus: $items('Build Ideation Request')[0].json.corpus,\n  ideasRaw: content\n}}];"
+      }
+    },
+    {
+      "id": "researchPayload",
+      "name": "Build Research Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2290,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const payload = {\n  model: $env.CONTENT_AGENT_PERPLEXITY_MODEL,\n  messages: [\n    { role: 'system', content: 'Follow the perplexity_research scroll.' },\n    { role: 'user', content: $json.ideasRaw }\n  ],\n  temperature: 0.0,\n  max_tokens: 1400\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  topic: $json.topic,\n  corpus: $json.corpus,\n  ideasRaw: $json.ideasRaw,\n  researchRequest: JSON.stringify(payload)\n}}];"
+      }
+    },
+    {
+      "id": "research",
+      "name": "Research Facts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2490,
+        300
+      ],
+      "parameters": {
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "options": {
+          "bodyParametersJson": "={{$json.researchRequest}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_OPENROUTER_KEY}}"
+              },
+              {
+                "name": "HTTP-Referer",
+                "value": "={{$env.CONTENT_AGENT_HTTP_REFERRER}}"
+              },
+              {
+                "name": "X-Title",
+                "value": "Codex-Research"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "bundle",
+      "name": "Bundle Draft Context",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2690,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const researchContent = items[0].json.data?.choices?.[0]?.message?.content || items[0].json.choices?.[0]?.message?.content || '[]';\nreturn [{ json: {\n  jobId: $items('Build Research Request')[0].json.jobId,\n  topic: $items('Build Research Request')[0].json.topic,\n  corpus: $items('Build Research Request')[0].json.corpus,\n  ideasRaw: $items('Build Research Request')[0].json.ideasRaw,\n  researchRaw: researchContent\n}}];"
+      }
+    },
+    {
+      "id": "draftPayload",
+      "name": "Build Draft Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2890,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const payload = {\n  model: $env.CONTENT_AGENT_CLAUDE_MODEL,\n  messages: [\n    { role: 'system', content: 'Follow the claude_sonnet_content scroll.' },\n    { role: 'user', content: JSON.stringify({ context_digest: $json.corpus, brand_voice: $env.CONTENT_AGENT_BRAND_VOICE || 'Direct, candid, optimistic', evidence_blocks: $json.researchRaw }) }\n  ],\n  temperature: 0.2,\n  max_tokens: 1600\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  draftRequest: JSON.stringify(payload)\n}}];"
+      }
+    },
+    {
+      "id": "draft",
+      "name": "Draft Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3090,
+        300
+      ],
+      "parameters": {
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "options": {
+          "bodyParametersJson": "={{$json.draftRequest}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_OPENROUTER_KEY}}"
+              },
+              {
+                "name": "HTTP-Referer",
+                "value": "={{$env.CONTENT_AGENT_HTTP_REFERRER}}"
+              },
+              {
+                "name": "X-Title",
+                "value": "Codex-Drafting"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "prepareReview",
+      "name": "Prepare Review Packet",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        3290,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const raw = items[0].json.data?.choices?.[0]?.message?.content || items[0].json.choices?.[0]?.message?.content || '{}';\nconst parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;\nreturn [{ json: {\n  jobId: $items('Build Draft Request')[0].json.jobId,\n  draftRaw: raw,\n  draft: parsed\n}}];"
+      }
+    },
+    {
+      "id": "slackPayload",
+      "name": "Build Slack Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        3490,
+        220
+      ],
+      "parameters": {
+        "functionCode": "const payload = {\n  text: `Codex Content Agent draft ready for review. Job: ${$json.jobId}`,\n  blocks: [\n    { type: 'section', text: { type: 'mrkdwn', text: `*Title:* ${$json.draft.title}` } },\n    { type: 'section', text: { type: 'mrkdwn', text: '```' + $json.draft.body + '```' } },\n    { type: 'section', text: { type: 'mrkdwn', text: '*CTA:* ' + $json.draft.cta } },\n    { type: 'actions', elements: [ { type: 'button', text: { type: 'plain_text', text: 'Approve' }, url: `${$env.CONTENT_AGENT_APPROVAL_URL}?jobId=${$json.jobId}` } ] }\n  ]\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  draft: $json.draft,\n  slackPayload: JSON.stringify(payload)\n}}];"
+      }
+    },
+    {
+      "id": "slack",
+      "name": "Notify Reviewer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3690,
+        220
+      ],
+      "parameters": {
+        "url": "={{$env.CONTENT_AGENT_SLACK_WEBHOOK}}",
+        "options": {
+          "bodyParametersJson": "={{$json.slackPayload}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "wait",
+      "name": "Await Approval",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        3890,
+        220
+      ],
+      "parameters": {
+        "mode": "wait"
+      }
+    },
+    {
+      "id": "publishPayload",
+      "name": "Build LinkedIn Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        4090,
+        140
+      ],
+      "parameters": {
+        "functionCode": "const payload = {\n  author: `urn:li:person:${$env.CONTENT_AGENT_LINKEDIN_AUTHOR}` ,\n  lifecycleState: 'PUBLISHED',\n  specificContent: {\n    'com.linkedin.ugc.ShareContent': {\n      shareCommentary: { text: `${$json.draft.body}\n\n${$json.draft.cta}` },\n      shareMediaCategory: 'NONE'\n    }\n  },\n  visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' }\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  draft: $json.draft,\n  linkedinPayload: JSON.stringify(payload)\n}}];"
+      }
+    },
+    {
+      "id": "publish",
+      "name": "Publish to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4290,
+        140
+      ],
+      "parameters": {
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "options": {
+          "bodyParametersJson": "={{$json.linkedinPayload}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_LINKEDIN_TOKEN}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "dryRunCheck",
+      "name": "Check Dry Run",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4090,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$env.CONTENT_AGENT_PUBLISH_MODE || 'dry-run'}}",
+              "operation": "notEqual",
+              "value2": "live"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "emitDryRun",
+      "name": "Emit Dry Run Log",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        4290,
+        320
+      ],
+      "parameters": {
+        "functionCode": "return [{ json: {\n  jobId: $json.jobId,\n  status: 'dry-run',\n  payload: $json.linkedinPayload\n}}];"
+      }
+    },
+    {
+      "id": "logDryRun",
+      "name": "Log Dry Run Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4490,
+        320
+      ],
+      "parameters": {
+        "url": "={{$env.CONTENT_AGENT_SUPABASE_REST_URL}}/rest/v1/content_job_events",
+        "options": {
+          "bodyParametersJson": "={{$json.eventPayload}}",
+          "headerParametersUi": {
+            "parameter": [
+              {
+                "name": "apikey",
+                "value": "={{$env.CONTENT_AGENT_SUPABASE_SERVICE_KEY}}"
+              },
+              {
+                "name": "Authorization",
+                "value": "=Bearer {{$env.CONTENT_AGENT_SUPABASE_SERVICE_KEY}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "bodyContentType": "json"
+        }
+      }
+    },
+    {
+      "id": "buildEvent",
+      "name": "Build Dry Run Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        4490,
+        220
+      ],
+      "parameters": {
+        "functionCode": "const event = {\n  job_id: $json.jobId,\n  stage: 'dry_run',\n  payload: $json.payload,\n  status: 'success'\n};\nreturn [{ json: {\n  jobId: $json.jobId,\n  payload: $json.payload,\n  eventPayload: JSON.stringify(event)\n}}];"
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set Job Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Job Context": {
+      "main": [
+        [
+          {
+            "node": "Fetch Job Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Job Manifest": {
+      "main": [
+        [
+          {
+            "node": "Normalize Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Manifest": {
+      "main": [
+        [
+          {
+            "node": "Build Harvest Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Harvest Requests": {
+      "main": [
+        [
+          {
+            "node": "YouTube Harvester",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "X Harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Harvester": {
+      "main": [
+        [
+          {
+            "node": "Merge Harvests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X Harvester": {
+      "main": [
+        [
+          {
+            "node": "Merge Harvests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Harvests": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Corpus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Corpus": {
+      "main": [
+        [
+          {
+            "node": "Build Ideation Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Ideation Request": {
+      "main": [
+        [
+          {
+            "node": "Generate Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Ideas": {
+      "main": [
+        [
+          {
+            "node": "Extract Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Ideas": {
+      "main": [
+        [
+          {
+            "node": "Build Research Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Research Request": {
+      "main": [
+        [
+          {
+            "node": "Research Facts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Facts": {
+      "main": [
+        [
+          {
+            "node": "Bundle Draft Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bundle Draft Context": {
+      "main": [
+        [
+          {
+            "node": "Build Draft Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Draft Request": {
+      "main": [
+        [
+          {
+            "node": "Draft Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Content": {
+      "main": [
+        [
+          {
+            "node": "Prepare Review Packet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Review Packet": {
+      "main": [
+        [
+          {
+            "node": "Build Slack Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build LinkedIn Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Slack Payload": {
+      "main": [
+        [
+          {
+            "node": "Notify Reviewer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Reviewer": {
+      "main": [
+        [
+          {
+            "node": "Await Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build LinkedIn Payload": {
+      "main": [
+        [
+          {
+            "node": "Publish to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Await Approval": {
+      "main": [
+        [
+          {
+            "node": "Check Dry Run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publish to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Dry Run": {
+      "main": [
+        [
+          {
+            "node": "Emit Dry Run Log",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publish to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Dry Run Log": {
+      "main": [
+        [
+          {
+            "node": "Build Dry Run Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Dry Run Event": {
+      "main": [
+        [
+          {
+            "node": "Log Dry Run Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Emit Dry Run Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Los_Angeles"
+  },
+  "id": "codex-content-agent",
+  "pinData": {}
+}
