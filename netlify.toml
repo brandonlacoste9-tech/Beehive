@@ -3,17 +3,18 @@
 # =====================================================
 
 [build]
-  # Base directory (root of repository)
-  base = "."
-
-  # Build command (next.config.js has output: 'export')
-  command = "npm run build"
-
+  # Build from the Next app directory in the monorepo
+  base = "apps/adgenxai-platform"
+  command = "npm ci && npm run build"
+  
   # Output directory
   publish = "out"
-
+  
   # Node version
   environment = { NODE_VERSION = "18" }
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # =====================================================
 # Functions Configuration
@@ -80,11 +81,11 @@
 # =====================================================
 
 [context.production]
-  command = "npm run build && npm run export"
+  command = "npm ci && npm run build"
   environment = { NODE_ENV = "production" }
 
 [context.deploy-preview]
-  command = "npm run build && npm run export"
+  command = "npm ci && npm run build"
 
 # =====================================================
 # Dev Settings

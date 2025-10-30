@@ -35,7 +35,6 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.7.2",
     "@testing-library/jest-dom": "^6.4.0",
     "@testing-library/react": "^16.0.0",
     "@types/formidable": "^3.4.6",
