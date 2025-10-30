@@ -27,29 +27,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js & pnpm cache
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Enable Corepack (pnpm)
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Validate (TypeScript & ESLint)
-        run: pnpm run validate
+        run: npm run type-check && npm run lint
 
       - name: Build
-        run: pnpm run build
+        run: npm run build
 
       - name: Test
-        # use --if-present in case repo has optional test task; adapt to your test runner needs
-        run: pnpm run test --if-present --silent
+        run: npm test --silent
 
       - name: Upload test logs (optional)
         if: always()
@@ -60,9 +54,9 @@ jobs:
             ./jest-*.log
             ./test-results/**/*.xml
 
-      - name: Show node + pnpm info (debug)
+      - name: Show node + npm info (debug)
         if: ${{ github.event.pull_request.user.login == 'brandonlacoste9-tech' || github.event_name == 'pull_request' }}
         run: |
           node -v
-          pnpm -v
-          pnpm list --depth 0 || true
+          npm -v
+          npm list --depth 0 || true
