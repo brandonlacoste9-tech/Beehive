@@ -20,6 +20,8 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Netlify `release-notes` function automates changelog seals, PR comments, and ledger logging.
+- Release-notes ritual fingerprints each seal (hash + byte size) and records branch metadata for CodexReplay overlays.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
