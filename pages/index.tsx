@@ -2,13 +2,19 @@ import { useState } from 'react';
 import Head from 'next/head';
 import NewsletterSubscribe from '../src/components/NewsletterSubscribe';
 
+interface AdResult {
+  headline: string;
+  body: string;
+  imagePrompt: string;
+}
+
 export default function Home() {
   const [formData, setFormData] = useState({
     product: '',
     audience: '',
     tone: 'professional',
   });
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<AdResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

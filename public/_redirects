@@ -1,0 +1,11 @@
+# Netlify Redirects for AdGenXAI
+# This file handles client-side routing for Next.js static export
+
+# API routes to Netlify Functions
+/api/*  /.netlify/functions/:splat  200
+
+# Stripe webhook (ensure it works properly)
+/api/stripe/webhook  /.netlify/functions/stripe/webhook  200
+
+# SPA fallback - must be last
+/*  /index.html  200

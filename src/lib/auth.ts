@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from './supabaseAdmin';
+import { sendUsageAlertEmail } from './email';
 
 /**
  * Authentication Utilities
@@ -140,27 +141,46 @@ export async function checkUsageLimit(userId: string): Promise<{
 export async function incrementUsage(userId: string): Promise<void> {
   const today = new Date().toISOString().split('T')[0];
 
-  // Get current usage
+  // Get current usage and user data
   const { data: userData } = await supabaseAdmin
     .from('users')
-    .select('daily_usage, daily_usage_date')
+    .select('daily_usage, daily_usage_date, daily_limit, monthly_usage, email, plan, usage_alert_sent')
     .eq('id', userId)
     .single();
 
   let dailyUsage = userData?.daily_usage || 0;
+  let usageAlertSent = userData?.usage_alert_sent || false;
 
   // Reset daily counter if it's a new day
   if (userData?.daily_usage_date !== today) {
     dailyUsage = 0;
+    usageAlertSent = false;
+  }
+
+  const newDailyUsage = dailyUsage + 1;
+  const dailyLimit = userData?.daily_limit || 10;
+
+  // Check if we need to send a usage alert (at 80% usage)
+  const usagePercent = (newDailyUsage / dailyLimit) * 100;
+  if (!usageAlertSent && usagePercent >= 80 && dailyLimit > 0 && userData?.email) {
+    // Send usage alert email
+    await sendUsageAlertEmail({
+      email: userData.email,
+      dailyUsage: newDailyUsage,
+      dailyLimit,
+      plan: userData.plan || 'free',
+    });
+    usageAlertSent = true;
   }
 
   // Increment counters
   await supabaseAdmin
     .from('users')
     .update({
-      daily_usage: dailyUsage + 1,
+      daily_usage: newDailyUsage,
       monthly_usage: (userData?.monthly_usage || 0) + 1,
       daily_usage_date: today,
+      usage_alert_sent: usageAlertSent,
       updated_at: new Date().toISOString(),
     })
     .eq('id', userId);
