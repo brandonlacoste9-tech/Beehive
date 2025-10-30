@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "codex_config_loader_messaging",
+    "version": "1.5.0",
+    "enabled": true
   }
 ]

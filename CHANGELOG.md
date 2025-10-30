@@ -30,6 +30,7 @@
 
 ### Scroll Registry
 - Introduced `scroll_index.json` entries for each new helper with `version: "1.4.5"` and `enabled: true`.
+- Logged `codex_config_loader_messaging` scroll to steward Codex update transmissions.
 
 ### Integration
 - Added `src/context/ace-pack.ts` to register the new helpers.
