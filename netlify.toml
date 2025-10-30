@@ -3,6 +3,9 @@
 # =====================================================
 
 [build]
+  # Base directory (root of repository)
+  base = "."
+
   # Build command
   command = "npm run build && npm run export"
 
