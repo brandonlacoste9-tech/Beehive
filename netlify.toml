@@ -6,8 +6,8 @@
   # Base directory (root of repository)
   base = "."
 
-  # Build command
-  command = "npm run build && npm run export"
+  # Build command (next.config.js has output: 'export')
+  command = "npm run build"
 
   # Output directory
   publish = "out"
