@@ -20,6 +20,7 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Codex mutation lineage: Supabase `codex_mutations` log + broadcast rituals stream into dashboard feed.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
