@@ -20,6 +20,8 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Restored Codex review workflow with resilient head-ref checkout, diff truncation, and PR comment loop.
+- Documented WSL forge ritual for validating the Codex Netlify function locally.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers

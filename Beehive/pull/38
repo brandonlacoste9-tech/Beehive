@@ -1,13 +1,13 @@
 ---
 
-**Resilience Update: Checkout Step**
+**Resilience Update: Checkout Step** — **Status: Sealed**
 
 This workflow update replaces the fragile `refs/pull/${{ github.event.pull_request.number }}/merge` reference with a direct checkout of the PR head ref via:
 ```yaml
 ref: ${{ github.event.pull_request.head.ref }}
 ```
 This change ensures the workflow remains functional even when the merge commit is unavailable—such as when the PR is closed, deleted, or the merge ref fails to materialize.  
-It aligns with GitHub Actions best practices and prevents silent failures in CI triggered by ephemeral refs.
+It aligns with GitHub Actions best practices and prevents silent failures in CI triggered by ephemeral refs. The ritual now also uploads Codex findings as artifacts, posts a persistent PR comment, and documents the WSL forge smoke test for local scribes.
 
 ---
 
