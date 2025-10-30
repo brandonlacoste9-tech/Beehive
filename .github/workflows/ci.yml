@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: CI (node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    fail-fast: false
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js & pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Enable Corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate (TypeScript & ESLint)
+        run: pnpm run validate
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        # use --if-present in case repo has optional test task; adapt to your test runner needs
+        run: pnpm run test --if-present --silent
+
+      - name: Upload test logs (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-${{ matrix.node-version }}
+          path: |
+            ./jest-*.log
+            ./test-results/**/*.xml
+
+      - name: Show node + pnpm info (debug)
+        if: ${{ github.event.pull_request.user.login == 'brandonlacoste9-tech' || github.event_name == 'pull_request' }}
+        run: |
+          node -v
+          pnpm -v
+          pnpm list --depth 0 || true

@@ -1,0 +1,168 @@
+name: Create Pull Request (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name to create/use'
+        required: true
+        default: 'chore/auto-pr'
+      base:
+        description: 'Base branch'
+        required: true
+        default: 'main'
+      title:
+        description: 'PR title'
+        required: true
+        default: 'chore: automated PR'
+      body:
+        description: 'PR body'
+        required: false
+        default: ''
+      paths:
+        description: 'Comma-separated paths to add (leave empty with all=true)'
+        required: false
+        default: ''
+      all:
+        description: 'Stage all changes (true/false)'
+        required: false
+        default: 'false'
+      draft:
+        description: 'Create draft PR (true/false)'
+        required: false
+        default: 'false'
+      reviewers:
+        description: 'Comma-separated reviewers'
+        required: false
+        default: ''
+      labels:
+        description: 'Comma-separated labels'
+        required: false
+        default: ''
+      force:
+        description: 'Reuse branch if exists (true/false)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with token to push)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepare branch
+        run: |
+          BR="${{ github.event.inputs.branch }}"
+          # create or checkout
+          if git show-ref --verify --quiet "refs/heads/$BR"; then
+            echo "Branch exists; checking out $BR"
+            git checkout "$BR"
+          else
+            git checkout -b "$BR"
+          fi
+
+      - name: Stage files
+        run: |
+          set -e
+          ALL="${{ github.event.inputs.all }}"
+          PATHS="${{ github.event.inputs.paths }}"
+          if [ "$ALL" = "true" ]; then
+            git add -A
+          elif [ -n "$PATHS" ]; then
+            # convert CSV to space-separated
+            IFS=',' read -ra P <<< "$PATHS"
+            for p in "${P[@]}"; do
+              git add "$p" || echo "Warning: path $p not found"
+            done
+          else
+            echo "No files staged (neither all=true nor paths provided)"
+          fi
+
+      - name: Commit if needed
+        run: |
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "${{ github.event.inputs.title }}"
+            git push --set-upstream origin "${{ github.event.inputs.branch }}"
+          fi
+
+      - name: Push branch if not pushed
+        run: |
+          BR="${{ github.event.inputs.branch }}"
+          if ! git ls-remote --exit-code --heads origin "$BR"; then
+            git push --set-upstream origin "$BR"
+          else
+            echo "Branch already pushed"
+          fi
+
+      - name: Create Pull Request
+        uses: actions/github-script@v7
+        id: create_pr
+        with:
+          script: |
+            const { branch, base, title, body, draft, reviewers, labels } = {
+              branch: "${{ github.event.inputs.branch }}",
+              base: "${{ github.event.inputs.base }}",
+              title: `${{ github.event.inputs.title }}`,
+              body: `${{ github.event.inputs.body }}`,
+              draft: "${{ github.event.inputs.draft }}" === "true",
+              reviewers: "${{ github.event.inputs.reviewers }}",
+              labels: "${{ github.event.inputs.labels }}"
+            };
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              head: branch,
+              base,
+              body,
+              draft
+            });
+            core.setOutput("pr_number", pr.data.number);
+            core.setOutput("pr_url", pr.data.html_url);
+
+            // request reviewers if provided
+            if (reviewers && reviewers.trim() !== "") {
+              const reviewersArr = reviewers.split(',').map(s => s.trim()).filter(Boolean);
+              if (reviewersArr.length) {
+                await github.rest.pulls.requestReviewers({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.data.number,
+                  reviewers: reviewersArr
+                });
+              }
+            }
+            // add labels if provided
+            if (labels && labels.trim() !== "") {
+              const labelsArr = labels.split(',').map(s => s.trim()).filter(Boolean);
+              if (labelsArr.length) {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.data.number,
+                  labels: labelsArr
+                });
+              }
+            }
+            return { pr_number: pr.data.number, pr_url: pr.data.html_url };
+
+      - name: Show PR URL
+        run: |
+          echo "PR created: ${{ steps.create_pr.outputs.pr_url }}"
+

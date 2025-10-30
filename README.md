@@ -1,61 +1,30 @@
-# 🐝 BeeHive: AdGenXAI
+﻿
 
-Welcome to BeeHive’s AdGenXAI—an AI-powered ad creative generator built for marketers, founders, and creators. Powered by GPT-4, styled with Tailwind CSS, and deployed with Netlify.
+See Safe Merge Flow: SAFE_MERGE_FLOW.md
 
-## ✨ Features
-- Input product description or URL
-- Generates headline, body copy, and image prompt
-- Responsive design with custom BeeHive branding
-- SEO-optimized for discoverability
-- Easy deployment and scaling
 
-## 🚀 Getting Started
+See Netlify deployment checklist: DOCS/NETLIFY_DEPLOY.md
 
-```bash
-# Clone the repo
-git clone https://github.com/brandonlacoste9-tech/Beehive.git
-cd Beehive
+PowerShell PR automation: scripts/pr-create.ps1:1
+  - Create branch, commit changes, push, and open a PR via `gh`.
+  - Examples:
+    - `./scripts/pr-create.ps1 -Branch feature/my-change -Title "feat: my change" -Body "Description" -All`
+    - `./scripts/pr-create.ps1 -Branch infra/dev-machine -Draft -Reviewer user1 -Label automerge`
+  - Parameters:
+    - `-Branch` (required): new or existing branch name
+    - `-Base` (optional): base branch (defaults to repo default)
+    - `-Title`, `-Body` (optional): PR title/body; uses `--fill` if omitted
+    - `-All` or `-Paths` (optional): what to commit
+    - `-Draft`, `-Label`, `-Reviewer`, `-Open`, `-Force`
 
-# Install dependencies
-npm install
+Bash PR automation: scripts/pr-create.sh:1
+  - Same helper for Bash users; `chmod +x` then run from repo root.
+  - Examples:
+    - `./scripts/pr-create.sh --branch feature/my-change --title "feat: my change" --body "desc" --all`
+    - `./scripts/pr-create.sh --branch feature/x --paths "README.md,docs/foo.md" --reviewer user1 --label infra`
+  - Flags: `--branch` (required), `--base`, `--title`, `--body`, `--paths` or `--all`, `--draft`, `--reviewer`, `--label`, `--open`, `--force`
 
-# Add your OpenAI key
-echo "OPENAI_API_KEY=your-key-here" > .env.local
-
-# Start the dev server
-npm run dev
-```
-
-## 🐝 Deployment Instructions
-
-This project is Netlify-ready:
-
-- Push to GitHub
-- Connect your repo to Netlify
-- Add `OPENAI_API_KEY` to Netlify environment variables
-- Set build command: `npm run build`
-- Set publish directory: `.next`
-- Set functions directory: `netlify/functions` (if using Netlify-style API)
-
-## Status badges
-
-<!-- Replace <owner> and <repo> with your GitHub values -->
-![PR AutoMerge](https://github.com/<owner>/<repo>/actions/workflows/pr-automerge.yml/badge.svg)
-
-## 🧠 Contributing
-
-We welcome pull requests! Here's how to help:
-
-1. Fork the repo
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a pull request
-
-## 🐝 Bee Philosophy
-
-BeeHive is built on the idea that creativity should be fast, collaborative, and sweet. Like bees, we work together to pollinate ideas and build something beautiful.
-
-## 📄 License
-
-MIT — free to use, remix, and share.
+GitHub Action: .github/workflows/auto-pr.yml:1
+  - Manually triggered (`workflow_dispatch`) workflow to create a PR from pushed changes.
+  - Inputs: `branch`, `base`, `title`, `body`, `paths`, `all`, `draft`, `reviewers`, `labels`, `force`.
+  - Uses `GITHUB_TOKEN`; ensure repo permissions allow pushes from Actions if needed.

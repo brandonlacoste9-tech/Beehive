@@ -1,0 +1,3 @@
+# CODEOWNERS: auto-request reviewers for all PRs
+# Format: path @github-username or @org/team
+*       @brandonlacoste9-tech
