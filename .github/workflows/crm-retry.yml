@@ -1,0 +1,24 @@
+name: CRM Retry Worker
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  retry-crm:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CRM_WEBHOOK_URL: ${{ secrets.CRM_WEBHOOK_URL }}
+      CRM_API_KEY: ${{ secrets.CRM_API_KEY }}
+      CRM_RETRY_LIMIT: ${{ secrets.CRM_RETRY_LIMIT }}
+      CRM_RETRY_BATCH: ${{ secrets.CRM_RETRY_BATCH }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: node scripts/retry-crm.js

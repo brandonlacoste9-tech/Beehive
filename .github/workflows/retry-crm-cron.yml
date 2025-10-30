@@ -1,0 +1,24 @@
+name: CRM Retry Worker
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+jobs:
+  run-retry-worker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: Run retry worker
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          CRM_RETRY_LOCK_TTL_MS: ${{ secrets.CRM_RETRY_LOCK_TTL_MS }}
+        run: node scripts/retry-crm.js
+

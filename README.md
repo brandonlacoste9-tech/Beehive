@@ -37,6 +37,11 @@ This project is Netlify-ready:
 - Set publish directory: `.next`
 - Set functions directory: `netlify/functions` (if using Netlify-style API)
 
+## Status badges
+
+<!-- Replace <owner> and <repo> with your GitHub values -->
+![PR AutoMerge](https://github.com/<owner>/<repo>/actions/workflows/pr-automerge.yml/badge.svg)
+
 ## 🧠 Contributing
 
 We welcome pull requests! Here's how to help:
