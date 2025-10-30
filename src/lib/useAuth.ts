@@ -18,6 +18,7 @@ interface User {
   monthly_limit: number;
   daily_usage: number;
   monthly_usage: number;
+  stripe_customer_id?: string;
 }
 
 interface AuthState {

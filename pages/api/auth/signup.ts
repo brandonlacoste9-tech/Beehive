@@ -66,11 +66,12 @@ export default async function handler(
     }
 
     // Determine usage limits based on plan
-    const limits = {
+    const limitsMap: Record<string, { daily: number; monthly: number }> = {
       free: { daily: 10, monthly: 300 },
       pro: { daily: 100, monthly: 3000 },
       enterprise: { daily: -1, monthly: -1 }, // -1 = unlimited
-    }[plan] || { daily: 10, monthly: 300 };
+    };
+    const limits = limitsMap[plan as string] || { daily: 10, monthly: 300 };
 
     // Create user profile in database
     const { error: profileError } = await supabaseAdmin.from('users').insert({

@@ -1,12 +1,12 @@
 {
   "extends": [
-    "next/core-web-vitals",
-    "eslint:recommended"
+    "next/core-web-vitals"
   ],
   "rules": {
     "no-unused-vars": "warn",
     "no-console": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "react-hooks/exhaustive-deps": "warn",
+    "@next/next/no-html-link-for-pages": "warn"
   }
 }

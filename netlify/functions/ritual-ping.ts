@@ -72,8 +72,8 @@ export const handler: Handler = async (event) => {
 
   const eventObj = { timestamp: updated.updatedAt, status: normalized, actor: updated['actor'] ?? null };
   const newHistory = [...history, eventObj].slice(-1000);
-  await store.set(HISTORY_KEY, newHistory);
-  await store.set(KEY, updated);
+  await store.set(HISTORY_KEY, JSON.stringify(newHistory));
+  await store.set(KEY, JSON.stringify(updated));
 
   await postSlack({
     text: `🐝 *Ritual beacon* ${normalized.toUpperCase()}`,

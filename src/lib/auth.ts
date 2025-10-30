@@ -144,7 +144,7 @@ export async function incrementUsage(userId: string): Promise<void> {
   // Get current usage and user data
   const { data: userData } = await supabaseAdmin
     .from('users')
-    .select('daily_usage, daily_usage_date, daily_limit, email, plan, usage_alert_sent')
+    .select('daily_usage, daily_usage_date, daily_limit, monthly_usage, email, plan, usage_alert_sent')
     .eq('id', userId)
     .single();
 
