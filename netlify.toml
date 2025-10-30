@@ -3,10 +3,11 @@
 # =====================================================
 
 [build]
-  # Build command
-  command = "npm run build && npm run export"
+  # Build from the Next app directory in the monorepo (apps/adgenxai-platform).
+  base = "apps/adgenxai-platform"
+  command = "npm run build"
 
-  # Output directory
+  # Output directory (relative to base)
   publish = "out"
 
   # Node version
@@ -76,12 +77,15 @@
 # Context-specific Settings
 # =====================================================
 
+
 [context.production]
-  command = "npm run build && npm run export"
+  # For production builds, run the Next build in the app base.
+  command = "npm run build"
   environment = { NODE_ENV = "production" }
 
+
 [context.deploy-preview]
-  command = "npm run build && npm run export"
+  command = "npm run build"
 
 # =====================================================
 # Dev Settings

@@ -1,0 +1,51 @@
+name: Validate Webhook Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_setup:
+        description: 'Run setup-webhook.js before validation'
+        required: false
+        default: 'true'
+      url:
+        description: 'Webhook URL to validate'
+        required: false
+        default: 'https://www.adgenxai.pro/.netlify/functions/github-webhook'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci || npm install --no-audit --no-fund
+
+      - name: Resolve token for webhook admin
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.WEBHOOK_ADMIN_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN=${{ secrets.WEBHOOK_ADMIN_TOKEN }}" >> $GITHUB_ENV
+          else
+            echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          fi
+          echo "GITHUB_WEBHOOK_SECRET=${{ secrets.GITHUB_WEBHOOK_SECRET }}" >> $GITHUB_ENV
+
+      - name: Setup webhook (optional)
+        if: ${{ inputs.run_setup == 'true' }}
+        run: node scripts/setup-webhook.js
+
+      - name: Validate webhook (signed ping)
+        env:
+          WEBHOOK_URL: ${{ inputs.url }}
+        run: node scripts/test-webhook.js
+
