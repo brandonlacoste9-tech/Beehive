@@ -13,7 +13,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "validate": "npm run type-check && npm run lint"
+    "validate": "npm run type-check && npm run lint",
+    "codex:remediate": "node packages/codex/bin/remediate.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",

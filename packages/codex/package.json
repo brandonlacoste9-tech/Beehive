@@ -1,0 +1,17 @@
+{
+  "name": "@foundry/codex",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Codex CLI for automated SAST remediation and LLM-powered code fixes",
+  "bin": {
+    "codex-remediate": "bin/remediate.js"
+  },
+  "dependencies": {
+    "openai": "^4.0.0",
+    "minimist": "^1.2.6"
+  },
+  "keywords": ["codex", "sast", "remediation", "security"],
+  "author": "AdGenXAI Team",
+  "license": "MIT"
+}
