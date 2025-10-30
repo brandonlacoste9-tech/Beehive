@@ -13,8 +13,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "validate": "npm run type-check && npm run lint",
-    "codex:remediate": "node packages/codex/bin/remediate.js"
+    "validate": "npm run type-check && npm run lint"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
@@ -36,7 +35,6 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.7.2",
     "@testing-library/jest-dom": "^6.4.0",
     "@testing-library/react": "^16.0.0",
     "@types/formidable": "^3.4.6",

@@ -40,3 +40,7 @@ pnpm-debug.log*
 .cache/
 *.tsbuildinfo
 next-env.d.ts
+
+# Codex remediation
+codex_patches/
+gl-sast-report.json

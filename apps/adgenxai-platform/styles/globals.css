@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f0f2f5;
+}
+
+/* BeeHive custom styles */
+.bee-gradient {
+  background: linear-gradient(135deg, #ffda79 0%, #ffa000 100%);
+}
+
+.bee-shadow {
+  box-shadow: 0 4px 14px 0 rgba(255, 191, 0, 0.2);
+}
