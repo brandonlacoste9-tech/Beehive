@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { buffer } from 'micro';
 import { supabaseAdmin } from '../../../src/lib/supabaseAdmin';
+import { sendPaymentEmail, sendWelcomeEmail } from '../../../src/lib/email';
 
 /**
  * Stripe Webhook Handler
@@ -136,6 +137,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     console.error('Failed to create user:', error);
   }
 
+  // Send welcome email
+  if (email) {
+    await sendWelcomeEmail({
+      email,
+      plan,
+    });
+  }
+
   console.log(`Subscription created: ${subscriptionId} for ${email}`);
 }
 
@@ -194,6 +203,23 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     paid_at: new Date(invoice.created * 1000).toISOString(),
   });
 
+  // Get user email and plan for notification
+  const { data: user } = await supabaseAdmin
+    .from('users')
+    .select('email, plan')
+    .eq('stripe_customer_id', customerId)
+    .single();
+
+  if (user?.email) {
+    await sendPaymentEmail({
+      email: user.email,
+      amount: invoice.amount_paid,
+      plan: user.plan || 'pro',
+      status: 'success',
+      invoiceUrl: invoice.hosted_invoice_url || undefined,
+    });
+  }
+
   console.log(`Payment succeeded: ${invoice.id}`);
 }
 
@@ -210,7 +236,21 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
     paid_at: new Date().toISOString(),
   });
 
-  // Optionally send notification email
+  // Get user email and plan for notification
+  const { data: user } = await supabaseAdmin
+    .from('users')
+    .select('email, plan')
+    .eq('stripe_customer_id', customerId)
+    .single();
+
+  if (user?.email) {
+    await sendPaymentEmail({
+      email: user.email,
+      amount: invoice.amount_due,
+      plan: user.plan || 'pro',
+      status: 'failed',
+    });
+  }
 
   console.log(`Payment failed: ${invoice.id}`);
 }

@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 import { withAuth, checkUsageLimit, incrementUsage, recordGeneration, AuthenticatedRequest } from '../../src/lib/auth';
 import type { NextApiResponse } from 'next';
 
@@ -99,7 +101,14 @@ async function generateWithModel(
     case 'gemini-flash':
       return generateWithGemini(product, audience, tone, 'gemini-1.5-flash');
 
-    // Future: Add GPT-4, Claude, etc.
+    case 'gpt-4':
+    case 'gpt-4-turbo':
+      return generateWithGPT4(product, audience, tone);
+
+    case 'claude':
+    case 'claude-3-5-sonnet':
+      return generateWithClaude(product, audience, tone);
+
     default:
       return generateWithGemini(product, audience, tone);
   }
@@ -155,6 +164,153 @@ Format your response as JSON:
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);
+    }
+  } catch (parseError) {
+    // Fallback parsing
+  }
+
+  return {
+    headline: text.split('\n')[0].substring(0, 60),
+    body: text.substring(0, 300),
+    imagePrompt: `${product} advertisement for ${audience}, ${tone} style`,
+  };
+}
+
+/**
+ * Generate with GPT-4
+ */
+async function generateWithGPT4(
+  product: string,
+  audience: string,
+  tone: string
+): Promise<{ headline: string; body: string; imagePrompt: string }> {
+  const apiKey = process.env.OPENAI_API_KEY;
+
+  if (!apiKey) {
+    // Fallback to sample data
+    return {
+      headline: `Unlock the Power of ${product}`,
+      body: `Join thousands of ${audience} who have already transformed their workflow with ${product}. Experience the difference today.`,
+      imagePrompt: `High-quality professional advertising photo for ${product}, targeting ${audience}, ${tone} aesthetic, photorealistic`,
+    };
+  }
+
+  const openai = new OpenAI({ apiKey });
+
+  const prompt = `You are an expert advertising copywriter. Generate compelling ad creative for the following:
+
+Product: ${product}
+Target Audience: ${audience}
+Tone: ${tone}
+
+Please provide:
+1. A catchy headline (max 60 characters)
+2. Persuasive body copy (2-3 sentences, max 150 words)
+3. An image prompt for AI image generation (detailed description)
+
+Format your response as JSON:
+{
+  "headline": "...",
+  "body": "...",
+  "imagePrompt": "..."
+}`;
+
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4-turbo-preview',
+    messages: [
+      {
+        role: 'system',
+        content: 'You are an expert advertising copywriter specializing in high-converting ad copy.',
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+    temperature: 0.8,
+    response_format: { type: 'json_object' },
+  });
+
+  const text = response.choices[0].message.content || '';
+
+  try {
+    const parsed = JSON.parse(text);
+    return {
+      headline: parsed.headline || '',
+      body: parsed.body || '',
+      imagePrompt: parsed.imagePrompt || '',
+    };
+  } catch (parseError) {
+    // Fallback parsing
+    return {
+      headline: text.split('\n')[0].substring(0, 60),
+      body: text.substring(0, 300),
+      imagePrompt: `${product} advertisement for ${audience}, ${tone} style`,
+    };
+  }
+}
+
+/**
+ * Generate with Claude
+ */
+async function generateWithClaude(
+  product: string,
+  audience: string,
+  tone: string
+): Promise<{ headline: string; body: string; imagePrompt: string }> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    // Fallback to sample data
+    return {
+      headline: `${product}: Built for ${audience}`,
+      body: `Experience the next generation of innovation with ${product}. Designed specifically for ${audience} who demand excellence and results.`,
+      imagePrompt: `Premium advertising visual for ${product}, targeting ${audience}, ${tone} mood, award-winning photography`,
+    };
+  }
+
+  const anthropic = new Anthropic({ apiKey });
+
+  const prompt = `You are an expert advertising copywriter. Generate compelling ad creative for the following:
+
+Product: ${product}
+Target Audience: ${audience}
+Tone: ${tone}
+
+Please provide:
+1. A catchy headline (max 60 characters)
+2. Persuasive body copy (2-3 sentences, max 150 words)
+3. An image prompt for AI image generation (detailed description)
+
+Format your response as JSON:
+{
+  "headline": "...",
+  "body": "...",
+  "imagePrompt": "..."
+}`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-3-5-sonnet-20241022',
+    max_tokens: 1024,
+    messages: [
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return {
+        headline: parsed.headline || '',
+        body: parsed.body || '',
+        imagePrompt: parsed.imagePrompt || '',
+      };
     }
   } catch (parseError) {
     // Fallback parsing
