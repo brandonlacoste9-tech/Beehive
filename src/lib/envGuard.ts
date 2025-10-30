@@ -7,3 +7,12 @@ export function assertServerEnv() {
     throw new Error(`Missing server env: ${missing.join(', ')}`);
   }
 }
+
+export function assertBeehivEnv() {
+  const missing: string[] = [];
+  if (!process.env.BEEHIV_API_KEY) missing.push('BEEHIV_API_KEY');
+  if (!process.env.BEEHIV_PUBLICATION_ID) missing.push('BEEHIV_PUBLICATION_ID');
+  if (missing.length) {
+    throw new Error(`Missing Beehiv env: ${missing.join(', ')}`);
+  }
+}
