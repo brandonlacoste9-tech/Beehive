@@ -1,0 +1,67 @@
+name: Daily Report & ChatGPT Sync
+
+on:
+  schedule:
+    # Run daily at 9 AM UTC (adjust as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+  push:
+    branches: [main]
+
+jobs:
+  daily-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 10 # Get last 10 commits for summary
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get telemetry stats
+        id: telemetry
+        run: |
+          if [ -n "${{ secrets.NETLIFY_AUTH_TOKEN }}" ]; then
+            curl -s "https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/functions/webhook-telemetry?days=1" \
+              -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" \
+              > telemetry.json
+          fi
+        continue-on-error: true
+
+      - name: Send to ChatGPT for analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NETLIFY_URL: ${{ secrets.DEPLOY_URL }}
+          BUILD_STATUS: success
+        run: |
+          npx ts-node scripts/chatgpt-relay.ts
+        continue-on-error: true
+
+      - name: Send daily email report
+        env:
+          REPORT_EMAIL: ${{ secrets.REPORT_EMAIL }}
+          REPORT_PASS: ${{ secrets.REPORT_PASS }}
+          EMAIL_SERVICE: gmail
+          NETLIFY_URL: ${{ secrets.DEPLOY_URL }}
+          BUILD_STATUS: success
+        run: |
+          npx ts-node scripts/email-report.ts
+        continue-on-error: true
+
+      - name: Upload telemetry artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telemetry-${{ github.run_number }}
+          path: |
+            telemetry.json
+            logs/chatgpt-summary-*.txt
+          retention-days: 7

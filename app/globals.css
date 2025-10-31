@@ -1,0 +1,97 @@
+/* === Theme tokens (light + dark) === */
+:root {
+  --bg: #F7FAFF;
+  --text: rgba(0,0,0,0.86);
+  --card: #ffffff;
+  --border: rgba(0,0,0,0.08);
+  --accent-teal: #35E3FF;
+  --accent-violet: #7C4DFF;
+  --accent-gold: #FFD76A;
+  
+  /* Tailwind-compatible */
+  --foreground: rgba(0,0,0,0.9);
+  --background: #F7FAFF;
+  --muted-foreground: rgba(0,0,0,0.6);
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  --accent-300: #fcd34d;
+  --accent-400: #f59e0b;
+}
+
+:root.dark {
+  --bg: #071022;
+  --text: rgba(255,255,255,0.92);
+  --card: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.12);
+  
+  --foreground: rgba(255,255,255,0.95);
+  --background: #071022;
+  --muted-foreground: rgba(255,255,255,0.6);
+}
+
+/* Global focus ring for a11y */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent-violet);
+  outline-offset: 2px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* === Aurora effect for crypto cards === */
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  --i: calc(var(--aurora-intensity, 0.3));
+  --h: calc(var(--aurora-hue, 150));
+  --s: var(--aurora-speed, 2s);
+  background:
+    radial-gradient(40% 40% at 20% 30%, hsl(var(--h) 90% 60% / calc(var(--i) * 0.85)), transparent 20%),
+    radial-gradient(30% 30% at 80% 70%, hsl(calc(var(--h) + 30) 85% 60% / calc(var(--i) * 0.6)), transparent 18%),
+    linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  filter: blur(18px) saturate(140%);
+  transform: translate3d(-8%, 0, 0);
+  transition: opacity 0.4s ease, transform 0.6s ease;
+  animation: auroraMove var(--s) linear infinite;
+}
+
+@keyframes auroraMove {
+  0% { transform: translate3d(-8%, 0, 0); }
+  50% { transform: translate3d(8%, 0, 0); }
+  100% { transform: translate3d(-8%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora {
+    animation: none;
+    transform: translate3d(0, 0, 0);
+  }
+}

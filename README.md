@@ -103,6 +103,23 @@ npm run dev
 
 Visit `http://localhost:3000`
 
+### 6. Monitor Functions (Optional)
+
+Tail Netlify Functions logs in real-time:
+
+**Windows (PowerShell):**
+```powershell
+.\scripts\tail-fns.ps1
+```
+
+**macOS/Linux:**
+```bash
+chmod +x scripts/tail-fns.sh
+./scripts/tail-fns.sh
+```
+
+This will display colorized logs for `github-webhook` and `webhook-telemetry` functions.
+
 ---
 
 ## 📖 Documentation

@@ -1,0 +1,84 @@
+/* Typing cursor animation for streaming responses */
+.typing-cursor {
+  display: inline-block;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  color: currentColor;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Focus visible styles for accessibility - consistent 2px outline */
+*:focus-visible {
+  outline: 2px solid hsl(200, 100%, 50%);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid hsl(200, 100%, 50%);
+  outline-offset: 2px;
+}
+
+/* Ensure interactive elements have visible focus in high contrast mode */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion fallback - disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  .typing-cursor {
+    animation: none;
+    opacity: 1;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Consistent spacing utilities using 4px scale */
+.space-y-4 > * + * {
+  margin-top: 1rem; /* 16px */
+}
+
+.space-y-8 > * + * {
+  margin-top: 2rem; /* 32px */
+}
+
+.space-y-12 > * + * {
+  margin-top: 3rem; /* 48px */
+}
+
+.space-y-16 > * + * {
+  margin-top: 4rem; /* 64px */
+}
+
+/* Gap utilities for consistent spacing */
+.gap-4 {
+  gap: 1rem; /* 16px */
+}
+
+.gap-8 {
+  gap: 2rem; /* 32px */
+}
+
+.gap-12 {
+  gap: 3rem; /* 48px */
+}
+

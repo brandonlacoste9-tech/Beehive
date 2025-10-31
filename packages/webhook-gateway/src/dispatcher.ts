@@ -3,7 +3,11 @@ import { TelemetryLogger } from './telemetry';
 export interface SwarmTask {
   type: string;
   priority: 'urgent' | 'high' | 'normal' | 'low';
+<<<<<<< HEAD
   context: Record<string, any>;
+=======
+  context: Record<string, unknown>;
+>>>>>>> feat/aurora-home
 }
 
 export interface DispatchResult {

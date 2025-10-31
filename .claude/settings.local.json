@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git reset:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(gh pr create:*)",
+      "Bash(git format-patch:*)",
+      "Bash(git rm -rf .)",
+      "Bash(gh api:*)",
+      "Bash(bash scripts/fix-corrupted-file-simple.sh:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"scripts/delete-corrupted-via-api.ps1\")",
+      "Bash(gh:*)",
+      "Bash(pwsh -File scripts/fix-corrupted-main.ps1)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File scripts/fix-corrupted-main.ps1)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -NoProfile -File scripts/fix-corrupted-main-v2.ps1)",
+      "Bash(git stash:*)",
+      "Bash(git cherry-pick:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -6,14 +6,22 @@ export interface TelemetryEvent {
   timestamp: string;
   category: TelemetryCategory;
   event: string;
+<<<<<<< HEAD
   data: Record<string, any>;
+=======
+  data: Record<string, unknown>;
+>>>>>>> feat/aurora-home
 }
 
 export class TelemetryLogger {
   private events: TelemetryEvent[] = [];
   private store = getStore('webhook-telemetry');
 
+<<<<<<< HEAD
   log(category: TelemetryCategory, event: string, data: Record<string, any> = {}) {
+=======
+  log(category: TelemetryCategory, event: string, data: Record<string, unknown> = {}) {
+>>>>>>> feat/aurora-home
     const telemetryEvent: TelemetryEvent = { timestamp: new Date().toISOString(), category, event, data };
     this.events.push(telemetryEvent);
     if (process.env.NODE_ENV === 'development') console.log(`[${category}] ${event}:`, data);
@@ -41,11 +49,15 @@ export class TelemetryLogger {
     try {
       const { blobs } = await this.store.list({ prefix: 'events/' });
       for (const blob of blobs) {
+<<<<<<< HEAD
         const data = await this.store.get(blob.key);
         if (data) {
           const event = JSON.parse(data as string);
           if (new Date(event.timestamp) >= startDate) events.push(event);
         }
+=======
+        
+>>>>>>> feat/aurora-home
       }
     } catch (error) {
       console.error('Failed to retrieve historical events:', error);

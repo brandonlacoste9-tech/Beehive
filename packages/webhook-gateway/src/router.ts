@@ -16,8 +16,13 @@ export class EventRouter {
     this.dispatcher = new SwarmDispatcher(telemetry);
   }
 
+<<<<<<< HEAD
   async route(eventType: string, payload: any): Promise<RoutingResult> {
     this.telemetry.log('router', 'routing_event', { eventType, action: payload?.action });
+=======
+  async route(eventType: string, payload: Record<string, unknown>): Promise<RoutingResult> {
+    this.telemetry.log('router', 'routing_event', { eventType, action: (payload as Record<string, unknown>)?.action });
+>>>>>>> feat/aurora-home
 
     switch (eventType) {
       case 'push':
@@ -38,7 +43,11 @@ export class EventRouter {
     }
   }
 
+<<<<<<< HEAD
   private async handlePush(payload: any): Promise<RoutingResult> {
+=======
+  private async handlePush(payload: Record<string, unknown>): Promise<RoutingResult> {
+>>>>>>> feat/aurora-home
     const { ref, repository, commits, pusher } = payload || {};
     const branch = typeof ref === 'string' ? ref.replace('refs/heads/', '') : '';
 
@@ -46,10 +55,17 @@ export class EventRouter {
       return { success: true, reason: 'Non-main branch push ignored' };
     }
 
+<<<<<<< HEAD
     const modifiedFiles = (commits || []).flatMap((c: any) => [
       ...(c?.added || []),
       ...(c?.modified || []),
       ...(c?.removed || []),
+=======
+    const modifiedFiles = (commits || []).flatMap((c: Record<string, unknown>) => [
+      ...((c?.added as string[]) || []),
+      ...((c?.modified as string[]) || []),
+      ...((c?.removed as string[]) || []),
+>>>>>>> feat/aurora-home
     ]);
 
     const task = {
@@ -61,7 +77,11 @@ export class EventRouter {
     return this.dispatcher.dispatch(task);
   }
 
+<<<<<<< HEAD
   private async handlePullRequest(payload: any): Promise<RoutingResult> {
+=======
+  private async handlePullRequest(payload: Record<string, unknown>): Promise<RoutingResult> {
+>>>>>>> feat/aurora-home
     const { action, pull_request, repository } = payload || {};
 
     if (!['opened', 'synchronize', 'reopened'].includes(action)) {
@@ -87,7 +107,11 @@ export class EventRouter {
     return this.dispatcher.dispatch(task);
   }
 
+<<<<<<< HEAD
   private async handlePullRequestReview(payload: any): Promise<RoutingResult> {
+=======
+  private async handlePullRequestReview(payload: Record<string, unknown>): Promise<RoutingResult> {
+>>>>>>> feat/aurora-home
     const { action, review, pull_request, repository } = payload || {};
     if (action !== 'submitted' || (review?.state === 'approved' && !review?.body)) {
       return { success: true, reason: 'Review not analyzed' };
@@ -102,7 +126,11 @@ export class EventRouter {
     return this.dispatcher.dispatch(task);
   }
 
+<<<<<<< HEAD
   private async handleWorkflowRun(payload: any): Promise<RoutingResult> {
+=======
+  private async handleWorkflowRun(payload: Record<string, unknown>): Promise<RoutingResult> {
+>>>>>>> feat/aurora-home
     const { workflow_run, repository } = payload || {};
     if (workflow_run?.conclusion !== 'failure') {
       return { success: true, reason: 'Workflow did not fail' };
@@ -117,11 +145,19 @@ export class EventRouter {
     return this.dispatcher.dispatch(task);
   }
 
+<<<<<<< HEAD
   private async handleIssue(payload: any): Promise<RoutingResult> {
     const { action, issue, repository } = payload || {};
     if (action !== 'opened') return { success: true, reason: 'Issue not opened' };
 
     const labels = (issue?.labels || []).map((l: any) => (typeof l === 'string' ? l : l?.name));
+=======
+  private async handleIssue(payload: Record<string, unknown>): Promise<RoutingResult> {
+    const { action, issue, repository } = payload || {};
+    if (action !== 'opened') return { success: true, reason: 'Issue not opened' };
+
+    const labels = ((issue as Record<string, unknown>)?.labels as Array<Record<string, unknown> | string> || []).map((l: Record<string, unknown> | string) => (typeof l === 'string' ? l : (l as Record<string, unknown>)?.name as string));
+>>>>>>> feat/aurora-home
     if (!labels.some((l: string) => ['bug', 'enhancement', 'feature'].includes((l || '').toLowerCase()))) {
       return { success: true, reason: 'Issue not labeled for analysis' };
     }
@@ -135,7 +171,11 @@ export class EventRouter {
     return this.dispatcher.dispatch(task);
   }
 
+<<<<<<< HEAD
   private async handleIssueComment(payload: any): Promise<RoutingResult> {
+=======
+  private async handleIssueComment(payload: Record<string, unknown>): Promise<RoutingResult> {
+>>>>>>> feat/aurora-home
     const { action, comment, issue, repository } = payload || {};
     if (action !== 'created' || !comment?.body?.includes?.('@adgenai-bot')) {
       return { success: true, reason: 'Bot not mentioned' };
