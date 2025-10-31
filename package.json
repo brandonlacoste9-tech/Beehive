@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next export",
+    "export": "echo 'Static export is automatically done by next build with output: export config'",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
