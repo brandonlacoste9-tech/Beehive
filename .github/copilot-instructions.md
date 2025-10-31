@@ -6,6 +6,8 @@ AdGenXAI is a production-ready SaaS platform for AI-powered advertising creative
 
 **Live Demo**: https://www.adgenxai.pro
 
+**Repository Status**: This repository has configuration and build setup complete. Source code directories (`src/`, `pages/`, `public/`, etc.) will be created as development progresses. The infrastructure is ready for Next.js 14 with TypeScript, configured for static export to Netlify.
+
 ### Main Technologies
 - **Framework**: Next.js 14 with TypeScript
 - **Styling**: Tailwind CSS 3.4
@@ -21,22 +23,33 @@ AdGenXAI is a production-ready SaaS platform for AI-powered advertising creative
 
 ## Project Structure
 
+**Current State**: The repository has build and configuration files set up. Source code directories will be created as the application is developed.
+
+**Expected structure** (as per tsconfig.json and jest.config.js):
 ```
 Beehive/
-├── .github/              # GitHub configuration and workflows
-├── netlify/functions/    # Netlify serverless functions (API routes)
-├── pages/               # Next.js pages (if using pages router)
-├── src/                 # Source code
+├── .github/              # GitHub configuration and instructions
+├── src/                 # Main source code (to be created)
 │   ├── components/      # React components
 │   ├── lib/            # Utility functions and configurations
 │   └── styles/         # CSS and styling files
-├── public/             # Static assets
-├── supabase/           # Database migrations and schemas
+├── pages/               # Next.js pages (Pages Router)
+├── public/             # Static assets (to be created)
+├── netlify/            # Netlify serverless functions (to be created)
+│   └── functions/      # API routes as Netlify functions
+├── supabase/           # Database migrations and schemas (to be created)
 ├── .env.example        # Environment variables template
 ├── netlify.toml        # Netlify configuration
 ├── package.json        # Dependencies and scripts
-└── tsconfig.json       # TypeScript configuration
+├── tsconfig.json       # TypeScript configuration
+└── tailwind.config.js  # Tailwind CSS configuration
 ```
+
+**Current files**:
+- Configuration: tsconfig.json, .eslintrc.json, next.config.js, tailwind.config.js, jest.config.js
+- Deployment: netlify.toml, DEPLOYMENT.md, NETLIFY_ENV_SETUP.md
+- Documentation: README.md, CHANGELOG.md, .env.example
+- GitHub: .github/ (merge rituals, post-merge checklist, copilot instructions)
 
 ## How to Build, Test, and Contribute
 
@@ -97,10 +110,10 @@ npm run validate
 
 ### React/Next.js
 - Use functional components with hooks
-- Follow Next.js 14 conventions (App Router if applicable, Pages Router currently)
+- Follow Next.js 14 conventions (Pages Router with static export as per next.config.js)
 - Keep components focused and single-purpose
 - Extract reusable logic into custom hooks
-- Use proper Next.js data fetching patterns (getServerSideProps, getStaticProps)
+- Use proper Next.js data fetching patterns (getStaticProps for static export)
 
 ### File Organization
 - Component files: PascalCase (e.g., `UserDashboard.tsx`)
@@ -224,7 +237,7 @@ When adding features, consider making them toggleable via environment variables.
 ## Monitoring and Debugging
 
 ### Health Checks
-- Main health endpoint: `/.netlify/functions/health`
+- Health endpoints will be at `/.netlify/functions/health` (when implemented)
 - Monitor AI provider availability
 - Check database connectivity
 - Verify Stripe webhook functionality
