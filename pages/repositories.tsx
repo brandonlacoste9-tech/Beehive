@@ -118,7 +118,11 @@ export default function Repositories() {
                   </div>
 
                   {repo.description && (
-                    <p className="text-gray-600 mb-4 text-sm line-clamp-2">
+                    <p className="text-gray-600 mb-4 text-sm overflow-hidden" style={{ 
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical'
+                    }}>
                       {repo.description}
                     </p>
                   )}
