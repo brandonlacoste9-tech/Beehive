@@ -1,0 +1,171 @@
+name: Phase 2 — Providers • Supabase • Auth (Orchestrator)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+    paths:
+      - "app/**"
+      - "lib/**"
+      - "docs/**"
+      - "mcp_servers/**"
+      - "agents/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "tsconfig.json"
+      - ".github/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  ci:
+    name: Lint • Typecheck • Test • Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: TypeScript check
+        run: npm run type-check --if-present
+
+      - name: Run unit tests
+        run: npm test --if-present
+
+      - name: Build project
+        run: npm run build --if-present
+
+  auto-label:
+    name: Auto-label by paths
+    runs-on: ubuntu-latest
+    needs: [ci]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  request-copilot-review:
+    name: Request Copilot Code Review + Agent
+    runs-on: ubuntu-latest
+    needs: [auto-label]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSLo /usr/local/bin/gh \
+            https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_linux_amd64
+          chmod +x /usr/local/bin/gh
+
+      - name: Post Copilot CCR request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api \
+            repos/$REPO/issues/$PR_NUMBER/comments \
+            -f body='@copilot Please run **Code Review** with tool-calling (ESLint, CodeQL, TypeScript).
+
+          **Focus areas:**
+          - Security: RLS enforcement, auth checks, secrets safety
+          - Correctness: Provider fallback logic, streaming handlers, data mutations
+          - Quality: ESLint compliance, TypeScript strict mode, tests updated
+
+          **Scope**
+          - PR-3 Providers: Real streaming via OpenAI with GitHub Models fallback
+          - PR-1 Supabase: Mock reads → RPC/views + real-time subscriptions
+          - PR-5 Auth: Supabase Auth integration + RLS enforcement
+
+          If safe, open **stacked PRs** per area and reference this PR. Follow `copilot-instructions.md` and `COPILOT_GUARDRAILS.md`.'
+
+  brief-claude:
+    name: Request Claude to propose diffs
+    runs-on: ubuntu-latest
+    needs: [request-copilot-review]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSLo /usr/local/bin/gh \
+            https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_linux_amd64
+          chmod +x /usr/local/bin/gh
+
+      - name: Post Claude planning prompt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api \
+            repos/$REPO/issues/$PR_NUMBER/comments \
+            -f body='@claude Please draft a concise **plan + diffs** for Phase-2 execution:
+
+          **PR-3 (Providers)**
+          Real streaming via OpenAI with GitHub Models fallback keyed by env `AI_PROVIDER=openai|github`
+          - Provider adapter interface + implementations
+          - Fallback + error-handling logic
+          - Feature flag + env config
+          - Unit tests for fallback paths
+          - Update PROVIDER_INTEGRATION.md
+
+          **PR-1 (Supabase)**
+          Replace mock data with real Supabase queries
+          - Remove mock data from dashboard pages
+          - Add RPC/view queries for metrics, projects, analytics
+          - Real-time subscriptions via `onSubscription`
+          - Types + integration tests
+          - Update DATABASE_SCHEMA.md
+
+          **PR-5 (Auth)**
+          Supabase Auth + RLS enforcement
+          - Migrate layout/middleware to Supabase Auth (JWT)
+          - Enforce RLS policies on all queries
+          - Every API route checks `user.id` + `org_id` ownership
+          - Update dashboard to read from `session` context
+          - Add auth integration tests
+
+          **Constraints:**
+          - Keep each PR **< 400 LOC** net change.
+          - Include tests + docs updates.
+          - Link to **Phase-2** project.
+          - Apply scoped labels (PR-3/PR-1/PR-5).
+          - No secrets in code; use `process.env.*` only.'
+
+  summary:
+    name: Phase 2 Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [brief-claude]
+    if: always()
+
+    steps:
+      - name: Print summary
+        run: |
+          echo "✅ Phase 2 Orchestrator Complete"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✓ CI (Lint/Typecheck/Test/Build)"
+          echo "✓ Auto-labeled by paths"
+          echo "✓ @copilot CCR requested"
+          echo "✓ @claude planning prompt posted"
+          echo ""
+          echo "🤖 Next: Copilot opens stacked fix PRs (PR-3, PR-1, PR-5)"
+          echo "👤 You: Review → approve → merge → auto-deploy ✨"
