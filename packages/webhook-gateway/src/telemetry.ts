@@ -41,11 +41,7 @@ export class TelemetryLogger {
     try {
       const { blobs } = await this.store.list({ prefix: 'events/' });
       for (const blob of blobs) {
-        const data = await this.store.get(blob.key);
-        if (data) {
-          const event = JSON.parse(data as string);
-          if (new Date(event.timestamp) >= startDate) events.push(event);
-        }
+        
       }
     } catch (error) {
       console.error('Failed to retrieve historical events:', error);
