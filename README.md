@@ -143,9 +143,13 @@ Visit `http://localhost:3000`
 
 Deploy to Netlify:
 1. Connect GitHub repo
-2. Build command: `npm run build && npm run export`
+2. Build command: `npm run build`
 3. Publish directory: `out`
 4. Add environment variables
+
+**Quick Start**: See [QUICK_START.md](QUICK_START.md) for step-by-step deployment instructions.
+
+**Full Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) for complete setup with all features.
 
 ---
 

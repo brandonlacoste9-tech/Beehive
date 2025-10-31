@@ -36,7 +36,7 @@ Before deploying, ensure you have:
 Netlify should auto-detect the settings from `netlify.toml`, but verify:
 
 ```
-Build command: npm run build && npm run export
+Build command: npm run build
 Publish directory: out
 Functions directory: netlify/functions
 ```
