@@ -1,0 +1,122 @@
+name: Claude Code Assistant
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned, labeled]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude-code-action:
+    # Trigger on @claude mentions or issue assignments
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code Assistant
+        uses: grll/claude-code-action@beta
+        with:
+          # === Authentication Options ===
+          # Option 1: Direct Anthropic API (uncomment to use)
+          # anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          # Option 2: OAuth for Claude Max subscribers (recommended - uncomment to use)
+          use_oauth: true
+          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+          secrets_admin_pat: ${{ secrets.SECRETS_ADMIN_PAT }}
+
+          # === Configuration ===
+          timeout_minutes: "60"
+          max_turns: "10"
+          use_sticky_comment: false
+          trigger_phrase: "@claude"
+
+          # === Tool Access ===
+          # Allow Claude to run tests and build commands
+          allowed_tools: |
+            Bash(npm install)
+            Bash(npm run build)
+            Bash(npm run test)
+            Bash(npm run lint)
+            Bash(npm run type-check)
+            Bash(npm run format)
+            Bash(git diff)
+            Bash(git log)
+            Edit
+            Read
+            Write
+            Glob
+            Grep
+
+          # === Custom Instructions ===
+          custom_instructions: |
+            You are an expert full-stack developer assisting with the Beehive platform.
+
+            ## Platform Overview
+            - **Type**: AI-powered autonomous publishing platform
+            - **Stack**: Next.js, TypeScript, Tailwind, Supabase, CrewAI
+            - **Purpose**: Multi-agent orchestration with BeeHive Codex rituals
+
+            ## Key Responsibilities
+            1. **Code Review**: Analyze PRs for quality, security, and performance
+            2. **Feature Implementation**: Help implement new features following the architecture
+            3. **Bug Fixes**: Debug issues and provide solutions
+            4. **Documentation**: Keep docs in sync with code changes
+            5. **Testing**: Suggest and implement test cases
+            6. **Best Practices**: Enforce TypeScript strict mode, proper error handling
+
+            ## Architecture Patterns
+            - Use platform integrations: `lib/platforms/` (Instagram, TikTok, YouTube)
+            - Follow BeeHive rituals: Badge, Metrics, Echo, History
+            - Leverage CrewAI for agent orchestration
+            - Use MCP servers for tool integration
+            - Maintain type safety with TypeScript strict mode
+
+            ## Quality Standards
+            - All code must pass: lint, type-check, unit tests, E2E tests
+            - PRs require meaningful commit messages
+            - Documentation updates for new features
+            - No hardcoded secrets or API keys
+            - Use environment variables for config
+
+            ## When Asked
+            - Code reviews: Focus on quality, security, performance
+            - Fixes: Provide complete solutions with tests
+            - Features: Ask clarifying questions first
+            - Documentation: Keep all docs updated together
+
+          # === Branches ===
+          base_branch: "main"
+          branch_prefix: "claude/"
+
+          # === Environment Variables ===
+          claude_env: |
+            NODE_ENV: development
+            DEBUG: false
+
+      - name: Comment on completion
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('✅ Claude Code Assistant completed');
