@@ -6,14 +6,14 @@ export interface TelemetryEvent {
   timestamp: string;
   category: TelemetryCategory;
   event: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export class TelemetryLogger {
   private events: TelemetryEvent[] = [];
   private store = getStore('webhook-telemetry');
 
-  log(category: TelemetryCategory, event: string, data: Record<string, any> = {}) {
+  log(category: TelemetryCategory, event: string, data: Record<string, unknown> = {}) {
     const telemetryEvent: TelemetryEvent = { timestamp: new Date().toISOString(), category, event, data };
     this.events.push(telemetryEvent);
     if (process.env.NODE_ENV === 'development') console.log(`[${category}] ${event}:`, data);

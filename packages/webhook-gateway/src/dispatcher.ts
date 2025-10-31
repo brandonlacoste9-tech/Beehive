@@ -3,7 +3,7 @@ import { TelemetryLogger } from './telemetry';
 export interface SwarmTask {
   type: string;
   priority: 'urgent' | 'high' | 'normal' | 'low';
-  context: Record<string, any>;
+  context: Record<string, unknown>;
 }
 
 export interface DispatchResult {
