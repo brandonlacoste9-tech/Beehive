@@ -1,54 +1,47 @@
-# 🐝 AdGenXAI - AI-Powered Advertising Creative Platform
+# 🚀 Brandon's Portfolio - SaaS Portfolio Website
 
-**Transform your advertising with AI-generated creative in seconds.**
+**Showcasing AI-powered applications and modern web development projects.**
 
-AdGenXAI is a complete, production-ready platform that combines Google Gemini AI, Stripe payments, Supabase authentication, and Beehiv newsletter integration to deliver a powerful SaaS solution for AI-powered ad creative generation.
+This is a comprehensive portfolio website built with Next.js that aggregates and displays information from all repositories, featuring project showcases, technical details, and live demos.
 
-🌐 **Live Demo**: [www.adgenxai.pro](https://www.adgenxai.pro)
+🌐 **Portfolio Features**:
+- Dynamic repository showcase from GitHub
+- Featured project highlights with detailed pages
+- Responsive design with Tailwind CSS
+- SEO optimized with metadata
+- Static site generation for fast performance
 
 ---
 
 ## ✨ Features
 
-### 🎨 **AI Ad Generation**
-- Generate compelling headlines, body copy, and image prompts
-- Multiple AI models (Gemini 1.5 Pro, Gemini Flash)
-- 6 tone options (Professional, Casual, Exciting, Friendly, Urgent, Luxury)
-- Real-time generation with fallback support
+### 🏠 **Portfolio Homepage**
+- Eye-catching hero section with gradient design
+- Tech stack showcase with categorized expertise
+- Featured projects with live demo links
+- Statistics dashboard (18+ repositories, 10+ technologies)
+- Responsive design that works on all devices
 
-### 💰 **Monetization**
-- 3-tier pricing: Free, Pro ($97/mo), Enterprise ($497/mo)
-- Stripe Checkout with 14-day free trial
-- Customer portal for subscription management
-- Automated webhook handling for payments
-- Usage limits and quota enforcement
+### 📂 **Repository Showcase**
+- Dynamic fetching from GitHub API
+- Real-time repository data display
+- Search and filter functionality
+- Language indicators and statistics
+- Direct links to GitHub repositories
 
-### 🔐 **Authentication & Security**
-- Supabase Auth with email/password
-- JWT token-based sessions
-- Protected API routes with middleware
-- Row-level security policies
-- Secure password requirements
+### 🎯 **Project Pages**
+- Detailed project information pages
+- Feature highlights and tech stack breakdowns
+- Live demo and GitHub repository links
+- Dynamic routing for each project
+- SEO-optimized metadata
 
-### 📊 **User Dashboard**
-- Real-time usage analytics with Chart.js
-- Generation history with search and export (CSV)
-- Subscription management
-- Usage quota tracking
-- Recent activity feed
-
-### 📧 **Newsletter Integration**
-- Beehiv API integration
-- Subscriber management
-- Newsletter campaigns
-- UTM tracking
-- Webhook synchronization
-
-### 🧠 **AI Sensory Cortex**
-- Health monitoring endpoints
-- Real-time system status
-- Event processing webhooks
-- Type-safe TypeScript implementation
+### 🎨 **Design & UX**
+- Modern gradient color schemes
+- Smooth transitions and hover effects
+- Mobile-responsive navigation
+- Accessible components
+- Tailwind CSS for rapid styling
 
 ---
 
@@ -58,11 +51,6 @@ AdGenXAI is a complete, production-ready platform that combines Google Gemini AI
 
 - Node.js 18+
 - npm or yarn
-- Netlify account
-- Supabase account
-- Stripe account
-- Google Gemini API key
-- Beehiv account (optional)
 
 ### 1. Clone & Install
 
@@ -72,30 +60,7 @@ cd Beehive
 npm install
 ```
 
-### 2. Set Up Environment Variables
-
-Copy `.env.example` to `.env.local`:
-
-```bash
-cp .env.example .env.local
-```
-
-Fill in all required variables (see `.env.example` for details).
-
-### 3. Set Up Database
-
-Run the migration in Supabase SQL Editor:
-```sql
--- Copy contents of: supabase/migrations/001_initial_schema.sql
-```
-
-### 4. Configure Stripe
-
-1. Create Products in Stripe Dashboard
-2. Get Price IDs and add to `.env.local`
-3. Set up webhook endpoint
-
-### 5. Run Development
+### 2. Run Development Server
 
 ```bash
 npm run dev
@@ -103,26 +68,22 @@ npm run dev
 
 Visit `http://localhost:3000`
 
+### 3. Build for Production
+
+```bash
+npm run build
+```
+
+The static site will be generated in the `out` directory.
+
 ---
 
-## 📖 Documentation
+## 📖 Pages Structure
 
-- **Getting Started**: [wiki/GettingStarted.md](wiki/GettingStarted.md)
-- **Gemini Integration**: [wiki/Gemini.md](wiki/Gemini.md)
-- **Beehiv Integration**: [scrolls/beehiv-integration.md](scrolls/beehiv-integration.md)
-- **Rituals & Checklists**: [scrolls/rituals.md](scrolls/rituals.md)
-
----
-
-## 🎯 Pricing Tiers
-
-| Feature | Free | Pro ($97/mo) | Enterprise ($497/mo) |
-|---------|------|--------------|----------------------|
-| Generations/day | 10 | 100 | Unlimited |
-| AI Models | Basic | Advanced | All + Custom |
-| History & Export | ✅ | ✅ | ✅ |
-| API Access | ❌ | ✅ | ✅ |
-| Support | Email | Priority | 24/7 Dedicated |
+- **Homepage** (`/`) - Hero section, tech stack, featured projects, and statistics
+- **Projects** (`/projects`) - Detailed showcase of all featured projects
+- **Project Details** (`/projects/[slug]`) - Individual project pages with full details
+- **Repositories** (`/repositories`) - Dynamic list of all GitHub repositories
 
 ---
 
@@ -130,22 +91,62 @@ Visit `http://localhost:3000`
 
 - **Framework**: Next.js 14 + TypeScript
 - **Styling**: Tailwind CSS 3.4
-- **AI**: Google Gemini 1.5 Pro
-- **Auth**: Supabase
-- **Payments**: Stripe
-- **Newsletter**: Beehiv
-- **Deployment**: Netlify
-- **Charts**: Chart.js
+- **Deployment**: Netlify (Static Export)
+- **API Integration**: GitHub REST API
+- **Icons**: SVG with Tailwind
+
+---
+
+## 📂 Project Structure
+
+```
+├── components/          # Reusable React components
+│   ├── Header.tsx      # Navigation header
+│   ├── Footer.tsx      # Site footer
+│   └── Layout.tsx      # Page layout wrapper
+├── pages/              # Next.js pages
+│   ├── index.tsx       # Homepage
+│   ├── projects.tsx    # Projects listing
+│   ├── repositories.tsx # Repositories showcase
+│   ├── projects/
+│   │   └── [slug].tsx  # Dynamic project pages
+│   └── api/            # API routes (not used in static export)
+├── lib/                # Utilities and data
+│   └── repositories.ts # Repository types and featured projects
+├── styles/             # Global styles
+│   └── globals.css     # Tailwind CSS + custom styles
+└── public/             # Static assets
+```
 
 ---
 
 ## 🚢 Deployment
 
-Deploy to Netlify:
-1. Connect GitHub repo
-2. Build command: `npm run build && npm run export`
-3. Publish directory: `out`
-4. Add environment variables
+### Deploy to Netlify
+
+1. Connect your GitHub repository to Netlify
+2. Build settings are already configured in `netlify.toml`
+3. Deploy with one click!
+
+**Build Command**: `npm run build`  
+**Publish Directory**: `out`
+
+The site will automatically build and deploy on every push to the main branch.
+
+---
+
+## 🎨 Featured Projects
+
+### AdGenXAI
+AI-Powered Advertising Creative Platform with Google Gemini AI, Stripe payments, and Supabase authentication.
+
+**Live Demo**: [www.adgenxai.pro](https://www.adgenxai.pro)
+
+### Content Ops Starter
+Netlify starter template with visual editing and Git Content Source integration.
+
+### React + Vite TypeScript
+Modern React application with Vite, TypeScript, and ESLint configuration.
 
 ---
 
@@ -157,12 +158,12 @@ MIT License - See [LICENSE](LICENSE)
 
 ## 🆘 Support
 
+- **GitHub**: [brandonlacoste9-tech](https://github.com/brandonlacoste9-tech)
 - **Email**: support@adgenxai.pro
-- **Health Check**: https://www.adgenxai.pro/.netlify/functions/health
-- **Issues**: https://github.com/brandonlacoste9-tech/Beehive/issues
+- **Issues**: [GitHub Issues](https://github.com/brandonlacoste9-tech/Beehive/issues)
 
 ---
 
-**Built with ❤️ using Claude Code**
+**Built with ❤️ using Next.js and Tailwind CSS**
 
-© 2025 AdGenXAI. All rights reserved.
+© 2025 Brandon LaCoste. All rights reserved.
