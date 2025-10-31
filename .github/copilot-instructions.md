@@ -237,7 +237,7 @@ When adding features, consider making them toggleable via environment variables.
 ## Monitoring and Debugging
 
 ### Health Checks
-- Health endpoints will be at `/.netlify/functions/health` (when implemented)
+- Health endpoints should be implemented at `/.netlify/functions/health`
 - Monitor AI provider availability
 - Check database connectivity
 - Verify Stripe webhook functionality
@@ -254,8 +254,8 @@ When adding features, consider making them toggleable via environment variables.
 - **Environment Setup**: .env.example
 - **Deployment Guide**: DEPLOYMENT.md
 - **Netlify Setup**: NETLIFY_ENV_SETUP.md
-- **Database Migrations**: supabase/MIGRATION_GUIDE.md (if exists)
 - **Change Log**: CHANGELOG.md
+- **Database Migrations**: supabase/MIGRATION_GUIDE.md (to be created)
 
 ## Support and Issues
 
