@@ -1,6 +1,10 @@
 // lib/platforms/index.ts
 // Social media platform integration exports
 
+import type { InstagramConfig } from './instagram';
+import type { TikTokConfig } from './tiktok';
+import type { YouTubeConfig } from './youtube';
+
 export { publishImage, type InstagramConfig } from './instagram';
 export { publishVideo as publishTikTokVideo, type TikTokConfig } from './tiktok';
 export { publishVideo as publishYouTubeVideo, type YouTubeConfig } from './youtube';

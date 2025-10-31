@@ -147,3 +147,12 @@ new valid workflow files."""
 
 if __name__ == "__main__":
     sys.exit(main())
+
+import PromptCard from "@/components/PromptCard";
+
+<HeroAurora /> 
+<div className="max-w-7xl mx-auto px-6 py-8">
+  <PromptCard />
+</div>
+<FeatureRail /> // or whatever component follows your hero
+

@@ -113,4 +113,4 @@ if (require.main === module) {
   syncToChatGPT();
 }
 
-export { DeployData };
+export type { DeployData };

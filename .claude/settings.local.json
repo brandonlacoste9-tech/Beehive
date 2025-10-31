@@ -19,7 +19,20 @@
       "Bash(powershell.exe -ExecutionPolicy Bypass -NoProfile -File scripts/fix-corrupted-main-v2.ps1)",
       "Bash(git stash:*)",
       "Bash(git cherry-pick:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(cmd.exe /c \"cd /d C:\\Users\\north\\OneDrive\\Documents\\GitHub\\Beehive && COPY_TO_ADGENXAI.bat\")",
+      "Bash(./COPY_TO_ADGENXAI.bat)",
+      "Bash(xcopy:*)",
+      "Bash(powershell:*)",
+      "Bash(./SHIP_IT_NOW_COMPLETE.bat)",
+      "Bash(cat:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat(bee-ship): add autonomous social publishing platform from Beehive\n\n- Add Instagram, TikTok, and YouTube platform integrations\n- Add comprehensive deployment scripts and documentation\n- Add BEE_SHIP deployment guides and checklists\n- Platform modules support autonomous content publishing\n- Ready for Netlify deployment with environment configuration\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(netlify status:*)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []

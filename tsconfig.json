@@ -15,10 +15,10 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*", "./app/components/*"],
-      "@/lib/*": ["./src/lib/*", "./lib/*"],
-      "@/styles/*": ["./styles/*"]
+      "@/*": ["./app/*", "./lib/*"],
+      "@/components/*": ["./app/components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/styles/*": ["./app/styles/*", "./styles/*"]
     },
     "plugins": [
       {

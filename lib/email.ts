@@ -4,7 +4,7 @@ import { createLogger } from "@/lib/logger";
 const logger = createLogger({ function: "email-service" });
 
 // Email transporter
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 587,
   secure: process.env.SMTP_PORT === "465",

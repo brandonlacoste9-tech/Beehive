@@ -32,7 +32,7 @@ export async function sendDailyReport(data?: Partial<ReportData>) {
     };
 
     // Create email transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE || "gmail",
       auth: {
         user: process.env.REPORT_EMAIL,
