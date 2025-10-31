@@ -40,3 +40,5 @@ pnpm-debug.log*
 .cache/
 *.tsbuildinfo
 next-env.d.ts
+.claude/
+_claude_backup/
