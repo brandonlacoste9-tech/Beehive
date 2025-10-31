@@ -31,8 +31,8 @@ Beehive/
 ├── .github/              # GitHub configuration and instructions
 ├── src/                 # Main source code (to be created)
 │   ├── components/      # React components
-│   ├── lib/            # Utility functions and configurations
-│   └── styles/         # CSS and styling files
+│   └── lib/            # Utility functions and configurations
+├── styles/             # CSS and styling files (root level, to be created)
 ├── pages/               # Next.js pages (Pages Router)
 ├── public/             # Static assets (to be created)
 ├── netlify/            # Netlify serverless functions (to be created)
