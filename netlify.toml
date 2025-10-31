@@ -4,7 +4,7 @@
 
 [build]
   # Build command
-  command = "npm run build && npm run export"
+  command = "npm run build"
 
   # Output directory
   publish = "out"
@@ -77,11 +77,11 @@
 # =====================================================
 
 [context.production]
-  command = "npm run build && npm run export"
+  command = "npm run build"
   environment = { NODE_ENV = "production" }
 
 [context.deploy-preview]
-  command = "npm run build && npm run export"
+  command = "npm run build"
 
 # =====================================================
 # Dev Settings
