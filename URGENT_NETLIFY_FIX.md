@@ -30,7 +30,7 @@ This means your live site is missing recent fixes!
 ## 📋 What This Fixes
 
 After the fix, your site will deploy from main branch which includes:
-- ✅ All recent fixes (commit f295bb9 and later)
+- ✅ All recent fixes and updates
 - ✅ lib/theme.ts and other updated files
 - ✅ Latest features and improvements
 - ✅ Bug fixes and enhancements
