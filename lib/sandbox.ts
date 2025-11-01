@@ -64,6 +64,9 @@ export async function createSandbox(config: SandboxConfig): Promise<Sandbox> {
   let timeoutMs: number;
   if (typeof config.timeout === 'string') {
     // Parse time string to milliseconds (e.g., '5m' -> 300000)
+    // Note: `as any` is needed here because TypeScript cannot properly narrow
+    // the string type to ms.StringValue within the type guard. The ms() function
+    // safely handles any string and returns a number when given a time string.
     timeoutMs = Number(ms(config.timeout as any));
   } else if (typeof config.timeout === 'number') {
     timeoutMs = config.timeout;
