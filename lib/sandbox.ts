@@ -61,9 +61,15 @@ export interface SandboxCommandOptions {
  * ```
  */
 export async function createSandbox(config: SandboxConfig): Promise<Sandbox> {
-  const timeoutMs = typeof config.timeout === 'string' 
-    ? ms(config.timeout as ms.StringValue)
-    : config.timeout || ms('5m' as ms.StringValue);
+  let timeoutMs: number;
+  if (typeof config.timeout === 'string') {
+    // Parse time string to milliseconds (e.g., '5m' -> 300000)
+    timeoutMs = Number(ms(config.timeout as any));
+  } else if (typeof config.timeout === 'number') {
+    timeoutMs = config.timeout;
+  } else {
+    timeoutMs = 300000; // Default: 5 minutes
+  }
 
   const sandboxConfig: any = {
     source: {

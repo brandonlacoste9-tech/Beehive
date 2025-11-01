@@ -7,6 +7,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import type { Sandbox } from '@vercel/sandbox';
+import ms from 'ms';
 
 // Import the types and functions
 import type { SandboxConfig, SandboxCommandOptions } from '../lib/sandbox';
@@ -102,9 +103,7 @@ describe('Sandbox Utility Functions', () => {
     expect(mockSandbox.domain).toHaveBeenCalledWith(3000);
   });
 
-  it('should validate timeout conversion logic', async () => {
-    const ms = (await import('ms')).default;
-    
+  it('should validate timeout conversion logic', () => {
     // Test time string conversions
     expect(ms('5m')).toBe(300000); // 5 minutes = 300000ms
     expect(ms('10m')).toBe(600000); // 10 minutes = 600000ms
@@ -138,8 +137,6 @@ describe('Sandbox Error Handling', () => {
   });
 
   it('should validate timeout ranges', () => {
-    const ms = require('ms');
-    
     // Hobby plan: max 45 minutes
     const hobbyMax = ms('45m');
     expect(hobbyMax).toBe(2700000);
