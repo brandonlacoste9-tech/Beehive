@@ -104,7 +104,7 @@ npm run test        # Unit tests
 - ✅ **OWASP Top 10**: Guard against injection, XSS, CSRF, etc.
 
 ### 2. Correctness (Blocking)
-- ✅ **Provider fallback logic**: OpenAI → Gemini → GitHub Models
+- ✅ **Provider fallback logic**: Gemini → OpenAI → GitHub Models
 - ✅ **Streaming handlers**: Complete and non-blocking with AbortController
 - ✅ **Real-time subscriptions**: Work bidirectionally via Supabase
 - ✅ **Tests**: Cover all new/changed behavior
@@ -189,7 +189,7 @@ async function streamCompletion(
 - **Data access**: Prefer views/RPC over ad-hoc SQL in API routes
 - **RLS**: Row-level security enforced on all tables
 - **Real-time**: Use `onSubscription` for live updates
-- **Types**: Generated from Supabase schema via `supabase gen types typescript`
+- **Types**: Generated from Supabase schema via `supabase gen types typescript --local`
 
 ### Authentication
 - **Service**: Supabase Auth (JWT tokens in session cookie)
