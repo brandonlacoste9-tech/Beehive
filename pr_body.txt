@@ -1,0 +1,55 @@
+## Summary
+
+Fixes corrupted GitHub Actions workflow directory structure and adds proper CI workflow.
+
+## Problem
+
+A corrupted directory was found in `.github/workflows/` with an invalid name containing YAML syntax:
+```
+.github/workflows/- name: Cache   uses: actions/
+```
+
+This created a nested corrupted structure that prevented proper workflow execution.
+
+## Changes
+
+### 🧹 Removed
+- Corrupted workflow directory structure with invalid names
+
+### ✅ Added
+- **`.github/workflows/ci.yml`** - Clean CI workflow for linting, type-checking, and testing
+- **`scripts/fix-corrupted-workflows.sh`** - Automated detection and removal script for future issues
+- **`docs/WORKFLOW_FIX_GUIDE.md`** - Comprehensive guide on the fix, root cause, and prevention
+
+## CI Workflow Features
+
+The new CI workflow:
+- ✅ Runs on all pushes to `main` and pull requests
+- ✅ Executes ESLint for code quality
+- ✅ Runs TypeScript type checking
+- ✅ Executes Jest tests
+- ✅ Verifies production build succeeds
+- ✅ Uses npm caching for faster runs
+
+## Testing
+
+- [x] Corrupted structure successfully removed
+- [x] New workflow file created with valid syntax
+- [x] Fix script created and made executable
+- [x] Documentation added
+- [ ] CI workflow will run on this PR to verify
+
+## Prevention
+
+The included fix script can be used in the future:
+```bash
+./scripts/fix-corrupted-workflows.sh
+```
+
+See `docs/WORKFLOW_FIX_GUIDE.md` for full details on prevention and troubleshooting.
+
+## Related
+
+- Fixes: Corrupted workflow file issue
+- Type: Infrastructure fix
+- Labels: `infra`, `bug-fix`
