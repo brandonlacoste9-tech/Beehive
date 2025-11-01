@@ -14,6 +14,7 @@ interface CommandItem {
 export default function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const commands: CommandItem[] = [
@@ -81,17 +82,45 @@ export default function CommandPalette() {
     cmd.description.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Reset selected index when search changes
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [search]);
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     // Cmd+K or Ctrl+K to open
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
       setIsOpen(prev => !prev);
+      return;
     }
+    
+    // Only handle these keys when palette is open
+    if (!isOpen) return;
+    
     // Escape to close
     if (e.key === 'Escape') {
       setIsOpen(false);
+      return;
     }
-  }, []);
+    
+    // Arrow navigation
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev + 1) % filteredCommands.length);
+    }
+    
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev - 1 + filteredCommands.length) % filteredCommands.length);
+    }
+    
+    // Enter to execute
+    if (e.key === 'Enter' && filteredCommands.length > 0) {
+      e.preventDefault();
+      filteredCommands[selectedIndex]?.action();
+    }
+  }, [isOpen, filteredCommands, selectedIndex]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -155,11 +184,13 @@ export default function CommandPalette() {
               <div className="max-h-[400px] overflow-y-auto">
                 {filteredCommands.length > 0 ? (
                   <div className="p-2">
-                    {filteredCommands.map((cmd) => (
+                    {filteredCommands.map((cmd, index) => (
                       <button
                         key={cmd.id}
                         onClick={cmd.action}
-                        className="w-full text-left p-4 rounded-xl hover:bg-white/10 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+                        className={`w-full text-left p-4 rounded-xl transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-cyan-400/50 ${
+                          index === selectedIndex ? 'bg-white/10' : 'hover:bg-white/10'
+                        }`}
                         aria-label={`${cmd.title}: ${cmd.description}`}
                       >
                         <div className="flex items-start gap-4">
