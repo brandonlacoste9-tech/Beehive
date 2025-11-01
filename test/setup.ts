@@ -1,11 +1,15 @@
 ﻿/**
  * test/setup.ts — minimal Vitest setup
- * Provides a fetch polyfill for jsdom tests.
+ * Node 20+ has native fetch support, no polyfill needed.
  */
-import fetch from "cross-fetch";
 
-if (typeof (globalThis as any).fetch === "undefined") {
-  (globalThis as any).fetch = fetch;
+// In Node 20+, fetch is available globally via the undici library
+// If for some reason it's not available, we can dynamically import node-fetch
+if (typeof globalThis.fetch === "undefined") {
+  // Fallback for environments without native fetch
+  import("node-fetch").then((nodeFetch) => {
+    (globalThis as any).fetch = nodeFetch.default;
+  });
 }
 
 export {};
