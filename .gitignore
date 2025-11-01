@@ -43,11 +43,13 @@ pnpm-debug.log*
 .cache/
 *.tsbuildinfo
 next-env.d.ts
-<<<<<<< HEAD
 .claude/
 _claude_backup/
-=======
 
 # Local Netlify folder
 .netlify
->>>>>>> feat/aurora-home
+
+# Archived files (temporary scripts and old docs)
+.temp-archived/
+docs/archived/
+scripts/archived/
