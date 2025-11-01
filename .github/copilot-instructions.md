@@ -157,8 +157,8 @@ npm run test        # Unit tests
 
 ### Providers (PR-3)
 - **Primary**: Google Gemini (`gemini-1.5-pro`, `gemini-1.5-flash`)
-- **Fallback**: OpenAI (`gpt-4-turbo`, `gpt-4o`)
-- **Additional**: GitHub Models (free tier), Anthropic Claude, Azure AI
+- **Fallback Chain**: Gemini → OpenAI (`gpt-4-turbo`, `gpt-4o`) → GitHub Models (free tier)
+- **Additional**: Anthropic Claude, Azure AI
 - **Selection**: Via `AI_PROVIDER=gemini|openai|github` env var
 - **Streaming**: Server-Sent Events (SSE) with AbortController
 - **Error handling**: Exponential backoff, circuit breaker, fallback trigger
@@ -189,7 +189,7 @@ async function streamCompletion(
 - **Data access**: Prefer views/RPC over ad-hoc SQL in API routes
 - **RLS**: Row-level security enforced on all tables
 - **Real-time**: Use `onSubscription` for live updates
-- **Types**: Generated from Supabase schema via `supabase gen types`
+- **Types**: Generated from Supabase schema via `supabase gen types typescript`
 
 ### Authentication
 - **Service**: Supabase Auth (JWT tokens in session cookie)
