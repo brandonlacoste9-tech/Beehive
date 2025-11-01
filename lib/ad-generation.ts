@@ -70,14 +70,14 @@ export async function generateAds(
 
   try {
 
-    const persona = getPersona(request.personaId);
-    const adTypeInfo = getAdTypeInfo(request.adType);
+    const persona = getPersona(request.personaId as string);
+    const adTypeInfo = getAdTypeInfo(request.adType as string);
     const variationCount = request.variationCount || 3;
 
     // Build tone guidance
     let toneGuidance = 'Use the persona\'s natural tone';
     if (request.toneModifier) {
-      const tone = getToneModifier(request.toneModifier);
+      const tone = getToneModifier(request.toneModifier as string);
       toneGuidance = `${toneGuidance}, with additional guidance: ${tone.description}`;
     }
 
@@ -145,12 +145,12 @@ export async function generateConstrainedAdCopy(
 ): Promise<string> {
   try {
 
-    const persona = getPersona(request.personaId);
-    const adTypeInfo = getAdTypeInfo(request.adType);
+    const persona = getPersona(request.personaId as string);
+    const adTypeInfo = getAdTypeInfo(request.adType as string);
 
     let toneGuidance = 'Use the persona\'s natural tone';
     if (request.toneModifier) {
-      const tone = getToneModifier(request.toneModifier);
+      const tone = getToneModifier(request.toneModifier as string);
       toneGuidance = `${toneGuidance}, with: ${tone.description}`;
     }
 
@@ -243,7 +243,7 @@ export async function generateAdVariations(
   variationCount: number = 3
 ): Promise<string[]> {
   try {
-    const persona = getPersona(personaId);
+    const persona = getPersona(personaId as string);
 
     logger.info('variation_generation_started', {
       persona: personaId,

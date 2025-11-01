@@ -6,7 +6,6 @@
  */
 
 import { useState, FormEvent } from 'react';
-import { PersonaId, AdType, ToneModifier } from '@/lib/personas';
 
 export interface CreativeFormProps {
   onGenerate: (formData: GenerationRequest) => Promise<void>;
@@ -20,9 +19,9 @@ export interface GenerationRequest {
   productName: string;
   productDescription: string;
   targetAudience: string;
-  personaId: PersonaId;
-  adType: AdType;
-  toneModifier?: ToneModifier;
+  personaId: string;
+  adType: string;
+  toneModifier?: string;
   variationCount: number;
   additionalContext?: string;
 }
@@ -38,8 +37,8 @@ export function CreativeForm({
     productName: '',
     productDescription: '',
     targetAudience: '',
-    personaId: (personas[0]?.id as PersonaId) || 'small_business',
-    adType: (adTypes[0]?.id as AdType) || 'social_post',
+    personaId: personas[0]?.id || 'small_business',
+    adType: adTypes[0]?.id || 'social_post',
     variationCount: 3,
   });
 
@@ -174,7 +173,7 @@ export function CreativeForm({
         <select
           id="persona"
           value={formData.personaId}
-          onChange={e => handleChange('personaId', e.target.value as PersonaId)}
+          onChange={e => handleChange('personaId', e.target.value)}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           disabled={isLoading}
         >
@@ -194,7 +193,7 @@ export function CreativeForm({
         <select
           id="adType"
           value={formData.adType}
-          onChange={e => handleChange('adType', e.target.value as AdType)}
+          onChange={e => handleChange('adType', e.target.value)}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           disabled={isLoading}
         >
@@ -220,7 +219,7 @@ export function CreativeForm({
           id="toneModifier"
           value={formData.toneModifier || ''}
           onChange={e =>
-            handleChange('toneModifier', e.target.value ? (e.target.value as ToneModifier) : undefined)
+            handleChange('toneModifier', e.target.value ? e.target.value : undefined)
           }
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           disabled={isLoading}

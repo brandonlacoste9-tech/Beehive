@@ -1,12 +1,7 @@
-import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const AuroraEngine = dynamic(() => import('./components/AuroraEngine'), { ssr: false });
 
 export default function Home() {
-  return (
-    import dynamic from 'next/dynamic';
-
-    const AuroraEngine = dynamic(() => import('./components/AuroraEngine'), { ssr: false });
-
-    export default function Home() {
-      return <AuroraEngine />;
-    }
-              AdGenXAI
+  return <AuroraEngine />;
+}

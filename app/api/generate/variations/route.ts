@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateAdVariations } from '@/lib/ad-generation';
 import { createLogger } from '@/lib/logger';
-import { PersonaId } from '@/lib/personas';
+import type { PersonaId } from '@/lib/personas';
 
 const logger = createLogger({ function: 'api-variations' });
 

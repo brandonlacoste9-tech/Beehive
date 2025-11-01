@@ -87,3 +87,8 @@ export const TONE_MODIFIERS = {
     description: 'Clever, playful, memorable'
   }
 } as const;
+
+// Type definitions for use in other modules
+export type PersonaId = keyof typeof PERSONAS;
+export type AdType = keyof typeof AD_TYPES;
+export type ToneModifier = keyof typeof TONE_MODIFIERS;

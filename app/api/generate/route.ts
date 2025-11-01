@@ -14,7 +14,7 @@ import {
   getAvailableToneModifiers,
 } from '@/lib/ad-generation';
 import { createLogger } from '@/lib/logger';
-import { PersonaId, AdType, ToneModifier } from '@/lib/personas';
+import type { PersonaId, AdType, ToneModifier } from '@/lib/personas';
 
 const logger = createLogger({ function: 'api-generate' });
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Type validation
+    // Extract request parameters
     const personaId = body.personaId as PersonaId;
     const adType = body.adType as AdType;
     const toneModifier = body.toneModifier as ToneModifier | undefined;

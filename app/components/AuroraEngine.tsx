@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import '../styles/auroraEngine.css'
+import '../../styles/auroraEngine.css'
 
 export default function AuroraEngine() {
   const [isLoaded, setIsLoaded] = useState(false)
