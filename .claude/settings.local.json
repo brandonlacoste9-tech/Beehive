@@ -33,7 +33,8 @@
       "Bash(npm run build:*)",
       "Bash(netlify status:*)",
       "Bash(npm test:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": [],
     "ask": []

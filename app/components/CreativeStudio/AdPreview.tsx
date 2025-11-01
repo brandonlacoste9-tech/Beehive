@@ -32,7 +32,6 @@ export function AdPreview({
 }: AdPreviewProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const selectedAd = ads[selectedIndex];
 

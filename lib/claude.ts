@@ -68,8 +68,6 @@ ${request.additionalContext ? `Additional Context: ${request.additionalContext}`
 
 Generate compelling, ready-to-use ad variations.`;
 
-  const fullPrompt = systemPrompt + '\n\n' + userPrompt;
-
   try {
     let fullResponse = '';
     let tokensUsed = 0;
