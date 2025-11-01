@@ -1,0 +1,18 @@
+# PowerShell Smoke-Test GitHub Actions Workflow
+
+# .github/workflows/powershell-smoke.yml
+name: PS Smoke
+on: [push, pull_request]
+jobs:
+  ps-check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Run PowerShell script
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -NonInteractive -Command "./scripts/check-something.ps1"
