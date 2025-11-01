@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import '../../styles/auroraEngine.css'
+import CommandPalette from './CommandPalette'
+import Pricing from './Pricing'
 
 export default function AuroraEngine() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -13,6 +15,9 @@ export default function AuroraEngine() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Command Palette */}
+      <CommandPalette />
+      
       {/* Animated Aurora Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -inset-[10px] opacity-50">
@@ -23,24 +28,52 @@ export default function AuroraEngine() {
         </div>
       </div>
 
-      {/* Glass Navigation */}
-      <nav className="relative z-50 backdrop-blur-xl bg-black/20 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Floating Glass Navigation */}
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
+        <div className="backdrop-blur-2xl bg-white/10 dark:bg-black/20 border border-white/20 rounded-2xl shadow-2xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg"></div>
+              <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg shadow-lg"></div>
               <span className="text-xl font-bold text-white">Aurora Engine</span>
             </div>
             <div className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-white/80 hover:text-white transition-colors">Features</a>
-              <a href="#pricing" className="text-white/80 hover:text-white transition-colors">Pricing</a>
-              <button className="px-4 py-2 backdrop-blur-xl bg-gradient-to-r from-cyan-500/80 to-purple-500/80 border border-white/20 rounded-lg text-white font-medium hover:from-cyan-500 hover:to-purple-500 transition-all duration-300">
+              <button
+                className="flex items-center gap-2 text-white/60 hover:text-white/80 transition-all duration-200 text-sm"
+                aria-label="Open command palette"
+              >
+                <span>🔍</span>
+                <span>Search</span>
+                <kbd className="hidden lg:inline-block px-2 py-1 text-xs bg-white/10 rounded border border-white/20">
+                  ⌘K
+                </kbd>
+              </button>
+              <a 
+                href="#features" 
+                className="text-white/80 hover:text-white transition-all duration-200 hover:scale-105"
+                aria-label="Navigate to features section"
+              >
+                Features
+              </a>
+              <a 
+                href="#pricing" 
+                className="text-white/80 hover:text-white transition-all duration-200 hover:scale-105"
+                aria-label="Navigate to pricing section"
+              >
+                Pricing
+              </a>
+              <button 
+                className="px-4 py-2 backdrop-blur-xl bg-gradient-to-r from-cyan-500/80 to-purple-500/80 border border-white/20 rounded-lg text-white font-medium hover:from-cyan-500 hover:to-purple-500 hover:scale-105 hover:shadow-lg transition-all duration-300"
+                aria-label="Start creating with Aurora Engine"
+              >
                 Start Creating
               </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Spacer for fixed nav */}
+      <div className="h-20"></div>
 
       {/* Hero Section */}
       <section className="relative z-40 pt-20 pb-32">
@@ -166,13 +199,16 @@ export default function AuroraEngine() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <Pricing />
+
       {/* CTA Section */}
       <section className="relative z-40 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to create your <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Aurora</span>?
           </h2>
-          <p className="text-xl text-white/80 mb-8">Monthly or yearly. Cancel anytime.</p>
+          <p className="text-xl text-white/80 mb-8">Start your free trial today</p>
           <button className="px-12 py-4 backdrop-blur-xl bg-gradient-to-r from-cyan-500/80 to-purple-500/80 border border-white/20 rounded-xl text-white font-semibold text-xl hover:from-cyan-500 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-2xl">
             Start Creating Now
           </button>

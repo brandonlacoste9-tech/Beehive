@@ -86,7 +86,7 @@ export async function generateAds(
       productName: request.productName,
       productDescription: request.productDescription,
       targetAudience: request.targetAudience,
-      personaSystemPrompt: persona.systemPrompt,
+      personaSystemPrompt: persona.systemPrompt || `You are a creative marketer targeting ${persona.name}. Write engaging and effective content.`,
       adType: `${adTypeInfo.name} - ${adTypeInfo.lengthGuide}`,
       toneGuidance,
       variationCount,
@@ -158,7 +158,7 @@ export async function generateConstrainedAdCopy(
       productName: request.productName,
       productDescription: request.productDescription,
       targetAudience: request.targetAudience,
-      personaSystemPrompt: persona.systemPrompt,
+      personaSystemPrompt: persona.systemPrompt || `You are a creative marketer targeting ${persona.name}. Write engaging and effective content.`,
       adType: `${adTypeInfo.name} - ${adTypeInfo.lengthGuide}`,
       toneGuidance,
       variationCount: 1,
@@ -254,7 +254,7 @@ export async function generateAdVariations(
     const variations = await generateVariations(
       originalAd,
       variationType,
-      persona.systemPrompt,
+      persona.systemPrompt || `You are a creative marketer targeting ${persona.name}. Write engaging and effective content.`,
       variationCount
     );
 

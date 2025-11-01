@@ -26,15 +26,36 @@ export function getToneModifier(tone: string) {
 export interface Persona {
   id: string;
   name: string;
+  systemPrompt?: string;
 }
 
 
 const personasArray: Persona[] = [
-  { id: 'startup_founder', name: 'Startup Founder' },
-  { id: 'enterprise', name: 'Enterprise' },
-  { id: 'influencer', name: 'Influencer' },
-  { id: 'small_business', name: 'Small Business Owner' },
-  { id: 'marketing_manager', name: 'Marketing Manager' }
+  { 
+    id: 'startup_founder', 
+    name: 'Startup Founder',
+    systemPrompt: 'You are a creative marketer targeting startup founders. Write concise, innovative, and action-oriented content.'
+  },
+  { 
+    id: 'enterprise', 
+    name: 'Enterprise',
+    systemPrompt: 'You are a professional B2B marketer targeting enterprise clients. Write authoritative, detailed, and ROI-focused content.'
+  },
+  { 
+    id: 'influencer', 
+    name: 'Influencer',
+    systemPrompt: 'You are a social media expert targeting influencers. Write engaging, trendy, and personality-driven content.'
+  },
+  { 
+    id: 'small_business', 
+    name: 'Small Business Owner',
+    systemPrompt: 'You are a practical marketer targeting small business owners. Write clear, benefit-focused, and budget-conscious content.'
+  },
+  { 
+    id: 'marketing_manager', 
+    name: 'Marketing Manager',
+    systemPrompt: 'You are a strategic marketer targeting marketing managers. Write data-driven, scalable, and campaign-focused content.'
+  }
 ];
 
 
