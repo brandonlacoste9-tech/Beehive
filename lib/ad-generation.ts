@@ -17,6 +17,8 @@ import {
   type ToneModifier,
   AD_TYPES,
   TONE_MODIFIERS,
+  getAdTypeInfo,
+  getToneModifier
 } from './personas';
 import { createLogger } from './logger';
 
@@ -67,14 +69,16 @@ export async function generateAds(
   const startTime = Date.now();
 
   try {
+
     const persona = getPersona(request.personaId);
-    const adTypeInfo = AD_TYPES[request.adType];
+    const adTypeInfo = getAdTypeInfo(request.adType);
     const variationCount = request.variationCount || 3;
 
     // Build tone guidance
     let toneGuidance = 'Use the persona\'s natural tone';
     if (request.toneModifier) {
-      toneGuidance = `${toneGuidance}, with additional guidance: ${TONE_MODIFIERS[request.toneModifier]}`;
+      const tone = getToneModifier(request.toneModifier);
+      toneGuidance = `${toneGuidance}, with additional guidance: ${tone.description}`;
     }
 
     // Prepare generation request
@@ -140,12 +144,14 @@ export async function generateConstrainedAdCopy(
   }
 ): Promise<string> {
   try {
+
     const persona = getPersona(request.personaId);
-    const adTypeInfo = AD_TYPES[request.adType];
+    const adTypeInfo = getAdTypeInfo(request.adType);
 
     let toneGuidance = 'Use the persona\'s natural tone';
     if (request.toneModifier) {
-      toneGuidance = `${toneGuidance}, with: ${TONE_MODIFIERS[request.toneModifier]}`;
+      const tone = getToneModifier(request.toneModifier);
+      toneGuidance = `${toneGuidance}, with: ${tone.description}`;
     }
 
     const generationRequest: GenerationRequest & { maxCharacters?: number; maxLines?: number } = {
@@ -271,8 +277,8 @@ export async function generateAdVariations(
 /**
  * Get all available personas with descriptions
  */
+import { listPersonas } from './personas';
 export function getAvailablePersonas() {
-  const { listPersonas } = require('./personas');
   return listPersonas().map((persona: any) => ({
     id: persona.id,
     name: persona.name,
@@ -297,8 +303,9 @@ export function getAvailableAdTypes() {
  * Get all available tone modifiers
  */
 export function getAvailableToneModifiers() {
-  return Object.entries(TONE_MODIFIERS).map(([id, description]) => ({
+  return Object.entries(TONE_MODIFIERS).map(([id, info]) => ({
     id,
-    description,
+    name: info.name,
+    description: info.description,
   }));
 }
