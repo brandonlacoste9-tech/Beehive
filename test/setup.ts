@@ -1,15 +1,15 @@
 ﻿/**
  * test/setup.ts — minimal Vitest setup
- * Provides a fetch polyfill for jsdom tests.
- * Node 20+ has native fetch support, so no external polyfill needed.
+ * Node 20+ has native fetch support, no polyfill needed.
  */
 
-// Node 20+ has native fetch, just ensure it's available globally
+// In Node 20+, fetch is available globally via the undici library
+// If for some reason it's not available, we can dynamically import node-fetch
 if (typeof globalThis.fetch === "undefined") {
-  // This should not happen in Node 20+, but as a fallback we can use node-fetch
-  // which is already in dependencies
-  const nodeFetch = require("node-fetch");
-  (globalThis as any).fetch = nodeFetch;
+  // Fallback for environments without native fetch
+  import("node-fetch").then((nodeFetch) => {
+    (globalThis as any).fetch = nodeFetch.default;
+  });
 }
 
 export {};
