@@ -18,5 +18,10 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "pj_ace_ai_filmmaker",
+    "version": "0.1.0",
+    "enabled": true
   }
 ]

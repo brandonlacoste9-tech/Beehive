@@ -15,6 +15,7 @@
 ### Artifacts & Usability
 - Montage page with **Export .md/.json**.
 - Share buttons with **UTM** presets.
+- New PJ Ace filmmaker scroll (`scrolls/pj-ace-ai-filmmaker.md`) indexed for swarm reference.
 
 ### DevOps
 - `/api/health` instance/env guard.
