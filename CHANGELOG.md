@@ -20,6 +20,9 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- Grand Mutation Loop orchestrator Netlify function now executes declarative ritual graphs with bounded parallelism, resilient retries, and GitHub hydration when tokens are present.
+  - Emits CodexReplay overlays (`replayReady`, `durationMs`, `sizeBytes`, `jobId`) via response headers/body and mutation logs so the badge mirrors orchestration status.
+- Introduced a Vitest harness and GitHub Actions workflow to exercise Netlify functions, replacing "tests not run" with an automated ritual check.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers

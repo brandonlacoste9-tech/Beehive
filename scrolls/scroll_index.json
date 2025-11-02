@@ -18,5 +18,25 @@
     "name": "codex_history",
     "version": "1.4.5",
     "enabled": true
+  },
+  {
+    "name": "orchestrator",
+    "version": "1.4.5",
+    "enabled": true,
+    "extensions": {
+      "githubHydration": true,
+      "badgeOverlayField": "codexReplayOverlay",
+      "telemetryDoc": "scrolls/rituals.md#orchestration-telemetry",
+      "env": [
+        "GITHUB_TOKEN",
+        "GITHUB_PAT",
+        "CODEX_GITHUB_TOKEN",
+        "GITHUB_REPO",
+        "RITUAL_TIMEOUT_MS",
+        "RITUAL_MAX_RETRIES",
+        "RITUAL_PARALLEL_LIMIT",
+        "LOG_FORMAT"
+      ]
+    }
   }
 ]
