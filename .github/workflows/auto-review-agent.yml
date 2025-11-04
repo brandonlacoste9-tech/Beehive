@@ -9,6 +9,8 @@ on:
 jobs:
   auto-review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Trigger Auto-Review Agent
