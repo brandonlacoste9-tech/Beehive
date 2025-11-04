@@ -1,0 +1,45 @@
+name: Auto Review Agent
+
+on:
+  schedule:
+    # Run every day at 10 AM UTC
+    - cron: '0 10 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Auto-Review Agent
+        run: |
+          echo "Triggering auto-review agent for all open PRs and issues..."
+          response=$(curl -s -w "\n%{http_code}" -X POST https://www.adgenxai.pro/.netlify/functions/auto-review-agent)
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response:"
+          echo "$body" | jq '.' || echo "$body"
+          
+          if [ "$http_code" != "200" ]; then
+            echo "❌ Auto-review agent failed with status $http_code"
+            exit 1
+          fi
+          
+          echo "✅ Auto-review agent completed successfully"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Auto-Review Agent Run" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered bulk review for all open PRs and issues in:" >> $GITHUB_STEP_SUMMARY
+          echo "- brandonlacoste9-tech/adgenxai" >> $GITHUB_STEP_SUMMARY
+          echo "- brandonlacoste9-tech/Beehive" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the following for review comments:" >> $GITHUB_STEP_SUMMARY
+          echo "- [AdGenXAI Open PRs](https://github.com/brandonlacoste9-tech/adgenxai/pulls?state=open)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Beehive Open PRs](https://github.com/brandonlacoste9-tech/Beehive/pulls?state=open)" >> $GITHUB_STEP_SUMMARY
+          echo "- [AdGenXAI Open Issues](https://github.com/brandonlacoste9-tech/adgenxai/issues?state=open)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Beehive Open Issues](https://github.com/brandonlacoste9-tech/Beehive/issues?state=open)" >> $GITHUB_STEP_SUMMARY
