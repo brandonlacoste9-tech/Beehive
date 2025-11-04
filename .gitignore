@@ -43,11 +43,13 @@ pnpm-debug.log*
 .cache/
 *.tsbuildinfo
 next-env.d.ts
-<<<<<<< HEAD
 .claude/
 _claude_backup/
-=======
 
 # Local Netlify folder
 .netlify
->>>>>>> feat/aurora-home
+
+# Generated sitemaps (regenerated on each build)
+public/robots.txt
+public/sitemap.xml
+public/sitemap-*.xml

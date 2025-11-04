@@ -7,6 +7,21 @@
   NEXT_PUBLIC_SITE_URL = "https://foundryai.com"
   NEXT_TELEMETRY_DISABLED = "1"
 
+# Production context: explicit configuration for main branch deployments
+[context.production]
+  command = "npm run build"
+  publish = ".next"
+
+# Deploy Preview context: for pull requests and branch previews
+[context.deploy-preview]
+  command = "npm run build"
+  publish = ".next"
+
+# Branch deploy context: for non-production branch deployments
+[context.branch-deploy]
+  command = "npm run build"
+  publish = ".next"
+
 [dev]
   command = "npm run dev"
   port = 3000
