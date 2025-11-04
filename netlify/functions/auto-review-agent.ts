@@ -7,7 +7,7 @@ export const handler: Handler = async (event) => {
   const startTime = Date.now();
 
   try {
-    // Only allow POST requests
+    // Allow POST and GET requests
     if (event.httpMethod !== 'POST' && event.httpMethod !== 'GET') {
       return {
         statusCode: 405,
