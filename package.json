@@ -50,7 +50,7 @@
     "next": "^14.2.0",
     "next-sitemap": "^4.2.0",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.0",
+    "nodemailer": "^7.0.7",
     "openai": "^4.67.0",
     "react": "^18.3.0",
     "react-chartjs-2": "^5.2.0",
