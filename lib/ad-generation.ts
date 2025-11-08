@@ -12,6 +12,7 @@ import {
 } from './claude';
 import {
   getPersona,
+  listPersonas,
   type PersonaId,
   type AdType,
   type ToneModifier,
@@ -272,7 +273,6 @@ export async function generateAdVariations(
  * Get all available personas with descriptions
  */
 export function getAvailablePersonas() {
-  const { listPersonas } = require('./personas');
   return listPersonas().map((persona: any) => ({
     id: persona.id,
     name: persona.name,
