@@ -124,6 +124,7 @@ This will display colorized logs for `github-webhook` and `webhook-telemetry` fu
 
 ## 📖 Documentation
 
+- **🤖 Copilot Build Guide**: [COPILOT_BUILD_GUIDE.md](COPILOT_BUILD_GUIDE.md) - Complete specification for what GitHub Copilot should build
 - **Getting Started**: [wiki/GettingStarted.md](wiki/GettingStarted.md)
 - **Gemini Integration**: [wiki/Gemini.md](wiki/Gemini.md)
 - **Beehiv Integration**: [scrolls/beehiv-integration.md](scrolls/beehiv-integration.md)
