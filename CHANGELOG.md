@@ -20,6 +20,7 @@
 - `/api/health` instance/env guard.
 - CI ingest scaffold (crawler → BigQuery).
 - Dual-lane setup: `/vs` sandbox (zero-key), `/agent` full stack (Supabase/Gemini).
+- GitHub Action checkout tracks PR head refs to avoid missing merge commits.
 ## v1.4.5 — Remix Scheduler (2025-10-19)
 
 ### Codex Helpers
