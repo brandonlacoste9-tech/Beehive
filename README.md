@@ -50,6 +50,13 @@ AdGenXAI is a complete, production-ready platform that combines Google Gemini AI
 - Event processing webhooks
 - Type-safe TypeScript implementation
 
+### 🔒 **Vercel Sandbox Integration**
+- Secure execution of untrusted or user-generated code
+- Isolated environments for AI-generated creative testing
+- Support for Node.js and Python runtimes
+- Ephemeral compute for development and testing
+- See [DOCS/VERCEL_SANDBOX.md](DOCS/VERCEL_SANDBOX.md) and [examples/sandbox/](examples/sandbox/)
+
 ---
 
 ## 🚀 Quick Start
@@ -127,6 +134,8 @@ This will display colorized logs for `github-webhook` and `webhook-telemetry` fu
 - **🤖 Copilot Build Guide**: [COPILOT_BUILD_GUIDE.md](COPILOT_BUILD_GUIDE.md) - Complete specification for what GitHub Copilot should build
 - **Getting Started**: [wiki/GettingStarted.md](wiki/GettingStarted.md)
 - **Gemini Integration**: [wiki/Gemini.md](wiki/Gemini.md)
+- **Vercel Sandbox**: [DOCS/VERCEL_SANDBOX.md](DOCS/VERCEL_SANDBOX.md)
+- **Sandbox Examples**: [examples/sandbox/README.md](examples/sandbox/README.md)
 - **Beehiv Integration**: [scrolls/beehiv-integration.md](scrolls/beehiv-integration.md)
 - **Rituals & Checklists**: [scrolls/rituals.md](scrolls/rituals.md)
 
@@ -154,6 +163,7 @@ This will display colorized logs for `github-webhook` and `webhook-telemetry` fu
 - **Newsletter**: Beehiv
 - **Deployment**: Netlify
 - **Charts**: Chart.js
+- **Sandbox**: Vercel Sandbox (for secure code execution)
 
 ---
 
