@@ -1,10 +1,10 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
   functions = "netlify/functions"
 
 [build.environment]
-  NEXT_PUBLIC_SITE_URL = "https://foundryai.com"
+  NEXT_PUBLIC_SITE_URL = "https://www.adgenxai.pro"
   NEXT_TELEMETRY_DISABLED = "1"
 
 [dev]
@@ -12,5 +12,14 @@
   port = 3000
   functions = "netlify/functions"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-DNS-Prefetch-Control = "on"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

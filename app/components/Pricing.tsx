@@ -1,7 +1,6 @@
 "use client";
 
 import CheckoutButton from "./CheckoutButton";
-import GooglePayButton from "./GooglePayButton";
 import CryptoButton from "./CryptoButton";
 
 const plans = [
