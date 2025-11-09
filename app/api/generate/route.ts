@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   generateAds,
   generateConstrainedAdCopy,
-  evaluateGeneratedAds,
   getAvailablePersonas,
   getAvailableAdTypes,
   getAvailableToneModifiers,
@@ -22,7 +21,7 @@ const logger = createLogger({ function: 'api-generate' });
  * GET /api/generate
  * Returns available options for generation
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     return NextResponse.json({
       personas: getAvailablePersonas(),
@@ -131,20 +130,17 @@ export async function POST(request: NextRequest) {
 
     // Handle streaming responses
     if (streaming) {
-      return handleStreamingGeneration(
-        {
-          productName: body.productName,
-          productDescription: body.productDescription,
-          targetAudience: body.targetAudience,
-          personaId,
-          adType,
-          toneModifier,
-          variationCount,
-          additionalContext: body.additionalContext,
-          streaming: true,
-        },
-        logger
-      );
+      return handleStreamingGeneration({
+        productName: body.productName,
+        productDescription: body.productDescription,
+        targetAudience: body.targetAudience,
+        personaId,
+        adType,
+        toneModifier,
+        variationCount,
+        additionalContext: body.additionalContext,
+        streaming: true,
+      });
     }
 
     // Handle non-streaming responses
@@ -189,12 +185,10 @@ export async function POST(request: NextRequest) {
  * Handle streaming generation with real-time feedback
  */
 async function handleStreamingGeneration(
-  generationRequest: any,
-  logger: any
+  generationRequest: any
 ): Promise<NextResponse> {
   // Create a readable stream for streaming responses
   const encoder = new TextEncoder();
-  let generatedAds: string[] = [];
   let metadata: any = null;
 
   const customReadable = new ReadableStream({
@@ -210,7 +204,6 @@ async function handleStreamingGeneration(
           controller.enqueue(encoder.encode(escaped));
         });
 
-        generatedAds = result.ads;
         metadata = result.metadata;
 
         // Send closing and metadata
